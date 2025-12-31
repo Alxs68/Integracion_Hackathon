@@ -1,7 +1,8 @@
-package com.sentiment.api.client;
+package com.sentiment.api.integration.client;
 
-import com.sentiment.api.dto.SentimentResponse;
 import com.sentiment.api.errors.GlobalExceptionHandler.MlServiceException;
+import com.sentiment.api.integration.client.dto.MlSentimentRequest;
+import com.sentiment.api.integration.client.dto.MlSentimentResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
@@ -20,7 +21,7 @@ public class MlClient {
         this.env = env;
     }
 
-    public SentimentResponse predict(String text) {
+    public MlSentimentResponse predict(String text) {
         String baseUrl = env.getProperty("ml.base-url");
         String path = env.getProperty("ml.predict-path");
 
@@ -28,13 +29,13 @@ public class MlClient {
             throw new MlServiceException("Configuración del servicio ML inválida");
         }
         String url = baseUrl + path;
-        Map<String, String> request = Map.of("text", text);
+        MlSentimentRequest request = new MlSentimentRequest(text);
 
         try {
             return restTemplate.postForObject(
                     url,
                     request,
-                    SentimentResponse.class
+                    MlSentimentResponse.class
             );
         } catch (ResourceAccessException ex) {
             throw new MlServiceException(

@@ -1,7 +1,8 @@
 package com.sentiment.api.service;
 
-import com.sentiment.api.client.MlClient;
+import com.sentiment.api.integration.client.MlClient;
 import com.sentiment.api.dto.SentimentResponse;
+import com.sentiment.api.integration.client.dto.MlSentimentResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,10 @@ public class SentimentService {
     }
 
     public SentimentResponse analyze(String text) {
-        return mlClient.predict(text);
+        MlSentimentResponse mlResponse = mlClient.predict(text);
+        return new SentimentResponse(
+                mlResponse.prediction(),
+                mlResponse.probability()
+        );
     }
 }
