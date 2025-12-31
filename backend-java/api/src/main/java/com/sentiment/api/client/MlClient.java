@@ -21,8 +21,13 @@ public class MlClient {
     }
 
     public SentimentResponse predict(String text) {
-        String url = env.getProperty("ml.base-url")
-                + env.getProperty("ml.predict-path");
+        String baseUrl = env.getProperty("ml.base-url");
+        String path = env.getProperty("ml.predict-path");
+
+        if (baseUrl == null || path == null){
+            throw new MlServiceException("Configuración del servicio ML inválida");
+        }
+        String url = baseUrl + path;
         Map<String, String> request = Map.of("text", text);
 
         try {

@@ -13,13 +13,6 @@ public class SentimentService {
         this.mlClient = mlClient;
     }
 
-    /**
-     Analiza el sentimiento del texto recibido
-    Actualmente retorna una respuesta MOCK.
-    TODO: Integrar llamada al servicio ML (Python) via HTTP.
-    el servicio ML debe devolver {prevision, probabilidad}.
-    */
-
     public SentimentResponse analyze(String text) {
         return mlClient.predict(text);
     }
