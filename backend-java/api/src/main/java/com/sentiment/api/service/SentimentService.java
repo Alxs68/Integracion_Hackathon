@@ -17,8 +17,8 @@ public class SentimentService {
     public SentimentResponse analyze(String text) {
         MlSentimentResponse mlResponse = mlClient.predict(text);
         return new SentimentResponse(
-                mlResponse.prediction(),
-                mlResponse.probability()
+                mlResponse.prevision(),
+                mlResponse.probabilidad()
         );
     }
 }
