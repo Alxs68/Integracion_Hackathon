@@ -1,11 +1,19 @@
 package com.sentiment.api.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sentiment_analysis")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SentimentAnalysis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,34 +30,4 @@ public class SentimentAnalysis {
 
     @Column(nullable = false)
     private LocalDateTime fecha;
-
-    protected SentimentAnalysis(){}
-
-    public SentimentAnalysis(Long id, String text, String prevision, double probabilidad, LocalDateTime fecha) {
-        this.id = id;
-        this.text = text;
-        this.prevision = prevision;
-        this.probabilidad = probabilidad;
-        this.fecha = fecha;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getPrevision() {
-        return prevision;
-    }
-
-    public double getProbabilidad() {
-        return probabilidad;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
 }
