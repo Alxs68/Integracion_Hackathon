@@ -86,7 +86,7 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia):
     
     if hallazgo_critico:
         final_pred = "Negativo"
-        prob_final = 0.9999
+        prob_final = 0.99
         motivo_prob = "Veto Crítico (G68)"
     elif ajuste_semantico <= -0.4:
         final_pred = "Negativo"
