@@ -51,7 +51,7 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia):
                             break
                     
                     peso_adj = peso * mult
-                    hits.append({'peso': peso_adj, 'pos': i})
+                    hits.append({'peso': peso_adj, 'pos': i, 'word': " ".join(ngram_tokens)})
                     if peso_adj <= -0.8: hallazgo_critico = True
                     
                     # Deptos y Hallazgos
@@ -71,50 +71,57 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia):
                     break
         if not encontrado_ngram: i -= 1
 
-    # --- PROTECCIÓN CONTRA SARCASMO (Detección de Contraste) ---
+    # --- PROTECCIÓN CONTRA SARCASMO ---
     has_neg = any(h['peso'] < 0 for h in hits)
     contains_contrast = any(t in contrast_markers for t in tokens)
     
     for h in hits:
         peso_final = h['peso']
         if peso_final > 0 and (has_neg or contains_contrast):
-            # Penalización por Sarcasmo/Contraste: Si el elogio convive con quejas o peros, pierde fuerza
             peso_final *= 0.3 
         ajuste_semantico += peso_final
 
-    # --- Lógica de Algoritmo de Pesaje y Veto ---
-    prob_base = float(prob_ia)
-    
-    # Boost (+0.6): Solo si el ajuste semántico sigue siendo fuertemente positivo
-    if pred_ia == "Positivo" and ajuste_semantico > 0.5:
-        prob_base += 0.6
+    # --- LÓGICA DE CERTIDUMBRE G68 ---
+    prob_ia_val = float(prob_ia)
     
     if hallazgo_critico:
-        final_pred, prioridad, color = "Negativo", "CRÍTICA", "#D32F2F"
-        prob_base -= 0.7
+        final_pred = "Negativo"
+        prob_final = 0.9999
+        motivo_prob = "Veto Crítico (G68)"
+    elif ajuste_semantico <= -0.4:
+        final_pred = "Negativo"
+        prob_final = 0.95 if pred_ia == "Negativo" else 0.85
+        motivo_prob = "Ajuste Semántico Negativo"
+    elif ajuste_semantico >= 0.5:
+        final_pred = "Positivo"
+        prob_final = 0.95 if pred_ia == "Positivo" else 0.85
+        motivo_prob = "Ajuste Semántico Positivo"
+    elif abs(ajuste_semantico) < 0.2 and prob_ia_val < 0.6:
+        final_pred = "Neutro"
+        prob_final = 0.5000
+        motivo_prob = "Incertidumbre / Neutralidad"
     else:
-        # Detección de negatividad sutil
-        if ajuste_semantico <= -0.3: 
-            final_pred = "Negativo"
-        elif ajuste_semantico >= 0.5:
-            final_pred = "Positivo"
-        else:
-            # En caso de duda o empate (ironía), confiamos en la IA si detectó Negativo
-            final_pred = pred_ia
-            
-        prioridad = "Normal"
-        if final_pred == "Positivo": color = "#2E7D32"
-        elif final_pred == "Negativo": color = "#D32F2F"
-        else:
-            final_pred = "Neutro"
-            color = "#757575"
+        final_pred = pred_ia
+        prob_final = prob_ia_val
+        motivo_prob = "IA Base + Estabilidad Semántica"
 
-    prob_final = round(max(0.0001, min(0.9999, prob_base)), 4)
+    # --- LOG DE AUDITORÍA (Solo Consola) ---
+    print(f"\n🔍 [G68 AUDIT] Texto: '{texto[:60]}...'")
+    print(f"   ├─ IA Sugiere: {pred_ia} ({prob_ia_val:.4f})")
+    print(f"   ├─ Ajuste Semántico: {ajuste_semantico:.2f}")
+    if hits:
+        print(f"   ├─ Señales detectadas: {[h['word'] for h in hits]}")
+    print(f"   ├─ Áreas afectadas: {list(deptos) if deptos else ['General']}")
+    print(f"   ├─ Motivo Probabilidad: {motivo_prob}")
+    print(f"   └─ VEREDICTO FINAL: {final_pred} ({prob_final:.4f})")
+
+    prioridad = "CRÍTICA" if hallazgo_critico else "Normal"
+    color = "#D32F2F" if final_pred == "Negativo" else ("#2E7D32" if final_pred == "Positivo" else "#757575")
     prefijo = "[+] " if final_pred == "Positivo" else ("[-] " if final_pred == "Negativo" else "")
-    
+
     return {
         "previsión": f"{prefijo}{final_pred}",
-        "probabilidad": prob_final,
+        "probabilidad": round(prob_final, 4),
         "explicabilidad": {
             "hallazgos": sorted(list(hallazgos)) if hallazgos else ["Análisis contextual"],
             "departamentos": sorted(list(deptos)) if deptos else ["General"],
