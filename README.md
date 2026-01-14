@@ -3,16 +3,21 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-green)
 ![Python](https://img.shields.io/badge/Python-3.12.3-blue)
 ![Status](https://img.shields.io/badge/Status-MVP-yellow)
-**SentimentAPI** es una API REST industrial que clasifica el 
-sentimiento de textos (comentarios, reseñas o mensajes) 
-como **Positivo, Neutro o Negativo**, utilizando el **Motor Híbrido G68** 
-que combina Machine Learning avanzado con reglas semánticas de negocio 
-para detectar sarcasmo e ironía.
+## Descripcion
+**SentimentAPI** es una API REST que permite clasificar el
+sentimiento de texos (comentarios, reseñas o mensajes)
+como **Positivo, Neutro o Negativo**, devolviendo ademas la
+**Probabilidad/Confianza** de la prediccion.
+
+El objetivo del proyecto es demostrar la **integracion entre
+Data Science y Back-End**, entregando una MVP funcional capaz de
+recibir texto, procesarlo mediante un modelo de Machine Learning
+y responder de forma automatica a traves de una API.
 
 ---
 ## Caso de uso
 Empresas que reciben grandes volumenes de feedback (reseñas, encuestas,
-redes sociales) pueden usar esta API para: 
+redes sociales) pueden usar esta API para:
 
 - identificar rapidamente comentarios negativos
 - priorizar respuesta en atencion al cliente
@@ -25,7 +30,7 @@ redes sociales) pueden usar esta API para:
 ```mermaid
  flowchart TD
     A[texto de cliente] --> B[Back-End API]
-    B -->C[Servicio ML] 
+    B -->C[Servicio ML]
     C -->D[Modelo de sentimiento]
     D --> E[Respuesta]
 ```
@@ -112,16 +117,10 @@ POST: /predict/sentiment
 **Response**
 ```json
 {
-  "prevision": "Positivo",
-  "probabilidad": 0.87
+  "prevision" : "Positivo | Neutral | Negativo",
+  "probabilidad" : 0.87
 }
 ```
-### 🚀 Capacidades G68 (Bajo el Capó)
-Aunque la API entrega solo 2 campos para cumplir con el contrato, el microservicio utiliza un **Motor Híbrido** avanzado que garantiza alta precisión mediante:
-- **Detección de Sarcasmo:** Identifica ironía para no dar falsos positivos.
-- **Inversión Semántica:** Procesa negaciones ("no es malo") correctamente.
-- **Veto Crítico:** Priorización interna de riesgos (fraude, seguridad).
-- **Procesamiento de N-Gramas:** Análisis de contexto más allá de palabras sueltas.
 - Prevision: Clase predicha por el modelo
 - Probabilidad: Confianza de la clase ganadora (0-1)
 
@@ -143,7 +142,7 @@ Requisitos:
 - Maven
 
 Ejemplo de arranque (Terminal):
-```bash 
+```bash
 
 cd backend-java
 mvn spring-boot:run
@@ -218,9 +217,9 @@ Data Science ![Static Badge](https://img.shields.io/badge/MVP-yellow)
 
 ## Equipo
 
-Proyecto desarrollado por estudiantes de Backend 
+Proyecto desarrollado por estudiantes de Backend
 y Data Science como parte de un Hackathon de **NoCountry** junto
-con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas prácticas de desarrollo
+con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas prácticas de desarrollo 
 
 **Integrantes**:
 
@@ -228,7 +227,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
 
 <table>
   <tr>
-    <!-- Backend 1 -->
     <td align="center" width="200">
       <a href="https://github.com/TinusLopez">
         <img src="https://avatars.githubusercontent.com/u/73755236?v=4" width="120" style="border-radius:50%;" />
@@ -238,7 +236,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br/>
       <sub>Backend Developer · Frontend Designer</sub>
     </td>
-    <!-- Backend 2 -->
     <td align="center" width="200">
       <a href="https://github.com/lorenaraygoza09">
         <img src="https://avatars.githubusercontent.com/u/181152882?v=4" width="120" style="border-radius:50%;" />
@@ -248,7 +245,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br />
       <sub>Backend Developer · ML Integration </sub>
     </td>
-    <!-- Backend 3 -->
     <td align="center" width="200">
       <a href="https://github.com/Sneyki01">
         <img src="https://avatars.githubusercontent.com/u/156740507?v=4" width="120" style="border-radius:50%;" />
@@ -258,16 +254,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br />
       <sub>Backend Developer</sub>
     </td>
-    <!-- Backend 4
-    <td align="center" width="200">
-      <a href="https://github.com/backend4">
-        <img src="https://avatars.githubusercontent.com/u/ID4?v=4" width="120" style="border-radius:50%;" />
-        <br />
-        <strong>Nombre Apellido</strong>
-      </a>
-      <br />
-      <sub>Backend Developer · Integrations</sub>
-    </td>-->
   </tr>
 </table>
 
@@ -276,7 +262,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
 
 <table>
   <tr>
-    <!-- Data 1 -->
     <td align="center" width="200">
       <a href="https://github.com/dzapatasal">
         <img src="https://avatars.githubusercontent.com/u/182231593?v=4" width="120" style="border-radius:50%;" />
@@ -286,7 +271,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br />
       <sub>Data Scientist</sub>
     </td>
-    <!-- Data 2 -->
     <td align="center" width="200">
       <a href="https://github.com/Fernando-Falla">
         <img src="https://avatars.githubusercontent.com/u/203438966?v=4" width="120" style="border-radius:50%;" />
@@ -296,7 +280,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br />
       <sub>Data Scientist</sub>
     </td>
-    <!-- Data 4 -->
     <td align="center" width="200">
       <a href="https://github.com/Sheila-Amaya">
         <img src="https://avatars.githubusercontent.com/u/98847601?v=4" width="120" style="border-radius:50%;" />
@@ -306,7 +289,6 @@ con **AluraLatam**, con enfoque en integración real entre disciplinas y buenas 
       <br />
       <sub>Data Scientist</sub>
     </td>
-<!-- Data 5 -->
     <td align="center" width="200">
       <a href="https://github.com/Alxs68">
         <img src="https://avatars.githubusercontent.com/u/203614718?v=4" width="120" style="border-radius:50%;" />
@@ -353,8 +335,9 @@ Por definir*
 ## Limitaciones conocidas
 
 - El modelo depende de la calidad de texto de entrada
-- No soporta multiples idiomas (Optimizado para Español)
-- No hay persistencia de resultados nativa en el microservicio de Python
+- No soporta multiples idiomas (Solo español)
+- No se maneja sarcasmo ni ironia
+- No hay persistencia de resultados
 
 ---
 ## Nota final

@@ -1,4 +1,4 @@
-# config_g68.py - VERSIÓN INTEGRAL FINAL BLINDADA
+# config_g68.py - VERSIÓN INTEGRAL FINAL BLINDADA - G68 SUPREME
 DICCIONARIO_PESOS = {
     # --- NIVEL CRÍTICO: VETOS Y RIESGO REPUTACIONAL ---
     "estafa": -1.0, "robo": -1.0, "engaño": -0.9, "fraude": -1.0,
@@ -105,16 +105,12 @@ KEYWORDS_DEPT = {
         "recibido": "Logística/Estado",
         "seguimiento": "Logística/Visibilidad",
         "rastrear": "Logística/Visibilidad",
-        "suciedad": "Higiene/Estado",
-        "sucio": "Higiene/Estado",
-        "mancha": "Higiene/Estado",
-        "limpio": "Higiene/Estado",
         "ruido": "Infraestructura/Confort",
         "frio": "Infraestructura/Confort",
         "humedad": "Infraestructura/Confort",
         "viejo": "Infraestructura/Mantenimiento",
-        "roto": "Producto/Estado",
-        "rompió": "Producto/Estado",
+        "roto": "Producto/Hardware",
+        "rompió": "Producto/Hardware",
         "falla": "Producto/Fallo",
         "fallo": "Producto/Fallo",
         "errores": "Producto/Fallo",
@@ -124,7 +120,16 @@ KEYWORDS_DEPT = {
         "wifi": "Producto/Conectividad",
         "instrucciones": "Producto/Manual"
     },
-    "Atención al Cliente": {
+    "Higiene": {
+        "suciedad": "Higiene/Estado",
+        "sucio": "Higiene/Estado",
+        "mancha": "Higiene/Estado",
+        "limpio": "Higiene/Estado",
+        "asco": "Higiene/Percepción",
+        "chinches": "Higiene/Crítico",
+        "cucaracha": "Higiene/Crítico"
+    },
+    "Atencion": {
         "amable": "Trato/Personal",
         "grosero": "Trato/Inaceptable",
         "atención": "Servicio/Calidad",
@@ -141,7 +146,6 @@ KEYWORDS_DEPT = {
         "robot": "Servicio/Calidad",
         "burocrático": "Servicio/Procesos",
         "paciente": "Trato/Excelencia",
-        "grosero": "Trato/Inaceptable",
         "compensación": "Servicio/Recuperación",
         "empatía": "Trato/Humano",
         "sonrisa": "Trato/Hospitalidad",
@@ -149,20 +153,16 @@ KEYWORDS_DEPT = {
         "incompetente": "Trato/Deficiente",
         "inútil": "Servicio/Calidad",
         "pesadilla": "Trato/Inaceptable",
-        "mierda": "Trato/Inaceptable",
-        "puta": "Trato/Inaceptable",
-        "carajo": "Trato/Inaceptable",
         "guion": "Trato/Robotizado",
         "insoportable": "Servicio/Experiencia"
     },
-    "Administración y Procesos": {
+    "Admin": {
         "facturación": "Procesos/Facturación",
         "reembolso": "Procesos/Finanzas",
         "impuestos": "Procesos/Legal",
         "baja": "Procesos/Retención",
         "contrato": "Procesos/Legal",
         "privacidad": "Procesos/Seguridad",
-        "nómina": "Procesos/RRHH",
         "pago": "Procesos/Finanzas",
         "auditoría": "Procesos/Control",
         "laberinto": "Procesos/Complejos",
