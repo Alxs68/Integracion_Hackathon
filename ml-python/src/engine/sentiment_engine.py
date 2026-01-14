@@ -1,73 +1,73 @@
-import joblib, os
-from .config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT 
+import joblib
+import os
+import sys
+import re
+from nltk.stem import SnowballStemmer
+
+# 1. Configuración de Rutas (Para encontrar config_g68)
+current_dir = os.path.dirname(os.path.abspath(__file__)) # src/engine
+src_dir = os.path.dirname(current_dir)                   # src
+app_dir = os.path.join(src_dir, 'app')
+
+if app_dir not in sys.path:
+    sys.path.append(app_dir)
+
+# Importamos el diccionario
+try:
+    from config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT
+except ImportError:
+    print("⚠️ No se pudo importar config_g68 desde engine.")
 
 class SentimentEngine:
     def __init__(self):
         self.model, self.vectorizer = None, None
-        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.stemmer = SnowballStemmer('spanish')
         
-        rutas = [
-            os.path.join(current_dir, '..', '..', '..', 'models'), 
-            os.path.join(current_dir, '..', '..', 'models'),
-            os.path.join(os.getcwd(), 'models')
+        # 2. Búsqueda inteligente de modelos (Basado en tu estructura ml-python)
+        # Probamos tu ruta original y una ruta relativa de seguridad
+        base_project = os.path.dirname(src_dir) # Sube a la raíz del proyecto
+        
+        rutas_posibles = [
+            os.path.join(base_project, 'data', 'models'),
+            os.path.join(os.getcwd(), 'data', 'models'),
+            os.path.join(current_dir, '..', '..', 'data', 'models')
         ]
 
-        for r in rutas:
-            m_p = os.path.join(r, 'sentiment_model.pkl')
-            v_p = os.path.join(r, 'tfidf_vectorizer.pkl')
-            if os.path.exists(m_p):
+        for path in rutas_posibles:
+            m_path = os.path.join(path, 'sentiment_model.pkl')
+            v_path = os.path.join(path, 'tfidf_vectorizer.pkl')
+            
+            if os.path.exists(m_path):
                 try:
-                    self.model = joblib.load(m_p)
-                    self.vectorizer = joblib.load(v_p)
+                    self.model = joblib.load(m_path)
+                    self.vectorizer = joblib.load(v_path)
+                    print(f"✅ Modelos ML cargados exitosamente desde: {path}")
                     break
-                except: continue
+                except Exception as e:
+                    print(f"❌ Error al cargar .pkl en {path}: {e}")
+        
+        if not self.model:
+            print("⚠️ Advertencia: No se encontraron los archivos .pkl. La IA usará valores Neutrales por defecto.")
 
-    def predict(self, text: str):
-        try:
-            txt_limpio = text.lower().strip()
+    def predict_raw(self, text: str):
+        """Predicción técnica con lógica de IA cruda."""
+        if not self.model or not self.vectorizer:
+            return "Neutral", 0.5
             
-            # 1. ML
-            prob_ml = 0.5
-            if self.model and self.vectorizer:
-                vec = self.vectorizer.transform([txt_limpio])
-                prob_ml = self.model.predict_proba(vec)[0][1]
-            
-            # 2. Ajuste
-            aj_pos = sum(w for k, w in DICCIONARIO_PESOS.items() if k in txt_limpio and w > 0)
-            aj_neg = sum(w for k, w in DICCIONARIO_PESOS.items() if k in txt_limpio and w < 0)
-            final_p = max(0.0, min(1.0, prob_ml + aj_pos + (aj_neg * 1.5)))
-            
-            # 3. Previsibilidad
-            if final_p > 0.6: prev = "Positivo"
-            elif final_p < 0.4: prev = "Negativo"
-            else: prev = "Neutral"
-
-            # 4. Hallazgos
-            hall_fin = []
-            depts = set()
-            queja_g = any(DICCIONARIO_PESOS.get(w, 0) < 0 for w in txt_limpio.split())
-
-            for d, kws in KEYWORDS_DEPT.items():
-                for k, desc in kws.items():
-                    if k in txt_limpio:
-                        depts.add(d)
-                        peso = DICCIONARIO_PESOS.get(k, 0)
-                        if peso < 0 or (queja_g and k in ["comida", "desayuno", "baño", "cama", "aire"]):
-                            hall_fin.append(f"(-) {desc}")
-                        elif peso > 0:
-                            hall_fin.append(f"(+) {desc}")
-                        else:
-                            hall_fin.append(desc)
-
-            return {
-                "previsibilidad": prev,
-                "probabilidad": round(float(final_p), 4),
-                "explicabilidad": {
-                    "texto_limpio": txt_limpio,
-                    "hallazgos": list(set(hall_fin)) if hall_fin else ["Sin hallazgos"],
-                    "departamentos": list(depts) if depts else ["General"],
-                    "metodo": "G68 Híbrido"
-                }
-            }
-        except Exception as e:
-            return {"error": str(e)}
+        txt_limpio = re.sub(r'[^a-zñáéíóúü\s]', ' ', text.lower())
+        vec = self.vectorizer.transform([txt_limpio])
+        
+        # Obtener todas las probabilidades
+        probs = self.model.predict_proba(vec)[0]
+        # Mapa: 0: Negativo, 1: Neutro, 2: Positivo (Según clases del modelo)
+        
+        # El motor híbrido usa prob_ia para realizar ajustes. 
+        # Tradicionalmente, prob_ia representa la "positividad" o la confianza de la clase ganadora.
+        # Para mantener compatibilidad con el motor híbrido:
+        idx_max = probs.argmax()
+        pred = self.model.classes_[idx_max]
+        
+        # Usamos la probabilidad de 'Positivo' (índice 2) como base para el ajuste del motor híbrido
+        prob_positiva = float(probs[2])
+        
+        return pred, prob_positiva

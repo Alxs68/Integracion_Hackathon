@@ -3,16 +3,11 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-green)
 ![Python](https://img.shields.io/badge/Python-3.12.3-blue)
 ![Status](https://img.shields.io/badge/Status-MVP-yellow)
-## Descripcion
-**SentimentAPI** es una API REST que permite clasificar el 
-sentimiento de texos (comentarios, reseñas o mensajes) 
-como **Positivo, Neutro o Negativo**, devolviendo ademas la 
-**Probabilidad/Confianza** de la prediccion.
-
-El objetivo del proyecto es demostrar la **integracion entre
-Data Science y Back-End**, entregando una MVP funcional capaz de
-recibir texto, procesarlo mediante un modelo de Machine Learning
-y responder de forma automatica a traves de una API.
+**SentimentAPI** es una API REST industrial que clasifica el 
+sentimiento de textos (comentarios, reseñas o mensajes) 
+como **Positivo, Neutro o Negativo**, utilizando el **Motor Híbrido G68** 
+que combina Machine Learning avanzado con reglas semánticas de negocio 
+para detectar sarcasmo e ironía.
 
 ---
 ## Caso de uso
@@ -117,10 +112,16 @@ POST: /predict/sentiment
 **Response**
 ```json
 {
-  "prevision" : "Positivo | Neutral | Negativo",
-  "probabilidad" : 0.87
+  "prevision": "Positivo",
+  "probabilidad": 0.87
 }
 ```
+### 🚀 Capacidades G68 (Bajo el Capó)
+Aunque la API entrega solo 2 campos para cumplir con el contrato, el microservicio utiliza un **Motor Híbrido** avanzado que garantiza alta precisión mediante:
+- **Detección de Sarcasmo:** Identifica ironía para no dar falsos positivos.
+- **Inversión Semántica:** Procesa negaciones ("no es malo") correctamente.
+- **Veto Crítico:** Priorización interna de riesgos (fraude, seguridad).
+- **Procesamiento de N-Gramas:** Análisis de contexto más allá de palabras sueltas.
 - Prevision: Clase predicha por el modelo
 - Probabilidad: Confianza de la clase ganadora (0-1)
 
@@ -352,9 +353,8 @@ Por definir*
 ## Limitaciones conocidas
 
 - El modelo depende de la calidad de texto de entrada
-- No soporta multiples idiomas (Solo español)
-- No se maneja sarcasmo ni ironia
-- No hay persistencia de resultados
+- No soporta multiples idiomas (Optimizado para Español)
+- No hay persistencia de resultados nativa en el microservicio de Python
 
 ---
 ## Nota final
