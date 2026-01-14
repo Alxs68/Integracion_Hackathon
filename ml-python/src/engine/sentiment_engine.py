@@ -16,16 +16,19 @@ if app_dir not in sys.path:
 try:
     from config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT
 except ImportError:
-    print("⚠️ No se pudo importar config_g68 desde engine.")
+    # Intento de respaldo si está en la misma carpeta o ruta de src
+    try:
+        from .config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT
+    except:
+        pass
 
 class SentimentEngine:
     def __init__(self):
         self.model, self.vectorizer = None, None
         self.stemmer = SnowballStemmer('spanish')
         
-        # 2. Búsqueda inteligente de modelos (Basado en tu estructura ml-python)
-        # Probamos tu ruta original y una ruta relativa de seguridad
-        base_project = os.path.dirname(src_dir) # Sube a la raíz del proyecto
+        # 2. Búsqueda inteligente de modelos
+        base_project = os.path.dirname(src_dir) 
         
         rutas_posibles = [
             os.path.join(base_project, 'data', 'models'),
@@ -57,13 +60,9 @@ class SentimentEngine:
         txt_limpio = re.sub(r'[^a-zñáéíóúü\s]', ' ', text.lower())
         vec = self.vectorizer.transform([txt_limpio])
         
-        # Obtener todas las probabilidades
+        # Mapa: 0: Negativo, 1: Neutro, 2: Positivo
         probs = self.model.predict_proba(vec)[0]
-        # Mapa: 0: Negativo, 1: Neutro, 2: Positivo (Según clases del modelo)
         
-        # El motor híbrido usa prob_ia para realizar ajustes. 
-        # Tradicionalmente, prob_ia representa la "positividad" o la confianza de la clase ganadora.
-        # Para mantener compatibilidad con el motor híbrido:
         idx_max = probs.argmax()
         pred = self.model.classes_[idx_max]
         

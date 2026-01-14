@@ -28,6 +28,7 @@ def home():
     return {"status": "G68 Online", "model_loaded": ai_engine.model is not None}
 
 @app.post("/predict/sentiment")
+@app.post("/sentiment")
 async def predict(request: SentimentRequest):
     """
     Endpoint para análisis de sentimiento.
@@ -43,7 +44,7 @@ async def predict(request: SentimentRequest):
     # 3. Refinamiento con Motor Híbrido (Interno)
     res_hibrido = enriquecer_respuesta(request.text, pred_ia, prob_ia)
     
-    # 4. Formateo de salida estricto
+    # 4. Formateo de salida estricto con los dos campos oficiales
     # Limpiamos prefijos si existen
     label = res_hibrido["previsión"].replace("[+] ", "").replace("[-] ", "")
     

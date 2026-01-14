@@ -13,7 +13,7 @@ Métricas reales obtenidas mediante stress tests locales (Lote de 200 peticiones
 ### 🔬 Compilado de Reglas Semánticas (Explicabilidad Avanzada)
 Durante la ejecución, el motor proporciona una auditoría detallada en consola basada en sus pilares lógicos:
 
-1.  **Veto Crítico (Veto Soberano)**: Si se detecta un término de alto riesgo (ej. *estafa, robo, chinches*), el modelo prioriza la alerta y fuerza **Negativo (Certidumbre: 0.9999)**.
+1.  **Veto Crítico (Veto Soberano)**: Si se detecta un término de alto riesgo (ej. *estafa, robo, chinches*), el modelo prioriza la alerta y fuerza **Negativo (Certidumbre: 0.99)**.
 2.  **Vinculador de Contexto (N-Gram Bonding)**: Análisis de frases compuestas para capturar la esencia de la queja.
 3.  **Boost Semántico (1.5x)**: Los intensificadores multiplican el peso del sentimiento detectado.
 4.  **Mapeo 1-a-1 de Áreas**: Clasificación automática entre 5 Departamentos Críticos: **Marketing, Operaciones, Higiene, Atencion, Admin**.
@@ -24,14 +24,20 @@ Durante la ejecución, el motor proporciona una auditoría detallada en consola 
 ```text
 ml-python/
 ├── data/
-│   └── models/        # Modelos entrenados (.pkl)
+│   ├── models/        # Modelos entrenados (.pkl)
+│   └── raw/           # Master Dataset y Benchmarks
 ├── notebooks/         # Reporte técnico interactivo (G68 Playground)
 ├── src/
 │   ├── app/           # Punto de entrada de la API y Motor Híbrido
 │   └── engine/        # Motor de IA (SentimentEngine)
+├── utils/             # Scripts de limpieza y consolidación
 └── requirements.txt   # Dependencias de Data Science
 ```
 
-##  Documentación y Swagger
+## 🛠️ Instalación y Ejecución
+1. **Instalar dependencias:** `pip install -r requirements.txt`
+2. **Ejecutar la API:** `python src/app/main.py` (Puerto 8080)
+
+## 📊 Documentación y Swagger
 - **Notebook**: `/ml-python/notebooks/Reporte_Modelado_Sentimiento.ipynb`
 - **Swagger UI**: [http://localhost:8080/docs](http://localhost:8080/docs)
