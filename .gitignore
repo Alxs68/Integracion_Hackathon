@@ -12,9 +12,9 @@
 
 # 1.3 Objetos de Procesamiento/Modelos (Las carpetas donde guardamos los .pkl)
 # Ignora los archivos dentro de la carpeta donde guardaste el vectorizador y la matriz
-#/models/
-#/models/processing/
-#/models/champion/
+# /models/
+# /models/processing/
+# /models/champion/
 
 # 2. CACHÉS DE PYTHON/ENTORNO
 
@@ -25,6 +25,7 @@ __pycache__/
 venv/
 env/
 .env
+.venv/
 sentiment-venv/
 
 # 3. JUPYTER / VS CODE
