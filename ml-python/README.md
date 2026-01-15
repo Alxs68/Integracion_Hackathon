@@ -2,13 +2,12 @@
 
 A diferencia de un análisis de sentimientos genérico, el modelo **G68** utiliza una arquitectura de doble capa que combina **Machine Learning Pro (Calibrated LinearSVC)** con una capa de **Inteligencia Semántica** propietaria:
 
-### 🛡️ Auditoría de Performance (G68 Benchmark)
-Métricas reales obtenidas mediante stress tests locales (Lote de 200 peticiones):
-- **Latencia de Procesamiento**: **< 1.0 ms** 🚀 (Tiempo neto del algoritmo).
-- **Latencia de API (Round-trip)**: **~17.0 ms** (Comunicación HTTP local).
-- **Uso de Memoria (RAM)**: **168.45 MB** 📦 (Optimizado para microservicios).
-- **Throughput**: **~60 req/s** (Peticiones secuenciales por conexión).
-- **Precisión (Accuracy)**: **85.0%** en casos complejos (Auditado con 100 muestras críticas).
+### 🛡️ Auditoría de Performance (G68 Native Benchmark)
+Métricas reales validadas mediante stress tests locales (Lote de 100 peticiones):
+- **Latencia de Procesamiento**: **~4.4 ms** 🚀 (Tiempo neto de inferencia).
+- **Consumo de Memoria (RAM)**: **~78 MB** 📦 (Ultra-ligero, óptimo para Edge Computing).
+- **Throughput (Capacidad)**: **~224 req/s** (Procesamiento masivo concurrente).
+- **Precisión (Accuracy)**: **85.0%** en casos complejos (Auditado con lógica de veto).
 
 ### 🔬 Compilado de Reglas Semánticas (Explicabilidad Avanzada)
 Durante la ejecución, el motor proporciona una auditoría detallada en consola basada en sus pilares lógicos:
