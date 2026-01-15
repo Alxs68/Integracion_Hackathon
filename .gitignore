@@ -54,3 +54,5 @@ target/
 
 # OS
 .DS_Store
+# Ignore generated notebooks in external_artifacts
+external_artifacts/*.ipynb
