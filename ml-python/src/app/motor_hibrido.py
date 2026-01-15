@@ -175,7 +175,13 @@ def _generar_top_features(texto, hits, engine):
     # Prioridad 1: Críticos del diccionario
     if hits:
         ordenados = sorted(hits, key=lambda h: abs(h['original_peso']), reverse=True)
-        feats = [h['word'] for h in ordenados if abs(h['original_peso']) >= 0.8][:3]
+        # Tomamos los 3 más importantes si superan umbral o si son los únicos hallazgos relevantes
+        candidatos = [h for h in ordenados if abs(h['original_peso']) >= 0.8]
+        if not candidatos and ordenados:
+             candidatos = ordenados[:3] # Fallback a los top encontrados
+        
+        for h in candidatos[:3]:
+            feats.append(h['word'])
     
     # Prioridad 2: Features del modelo ML si faltan
     if len(feats) < 3 and engine:
