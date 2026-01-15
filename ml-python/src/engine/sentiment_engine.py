@@ -1,72 +1,73 @@
 import joblib
 import os
-import sys
-import re
-from nltk.stem import SnowballStemmer
-
-# 1. Configuración de Rutas (Para encontrar config_g68)
-current_dir = os.path.dirname(os.path.abspath(__file__)) # src/engine
-src_dir = os.path.dirname(current_dir)                   # src
-app_dir = os.path.join(src_dir, 'app')
-
-if app_dir not in sys.path:
-    sys.path.append(app_dir)
-
-# Importamos el diccionario
-try:
-    from config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT
-except ImportError:
-    # Intento de respaldo si está en la misma carpeta o ruta de src
-    try:
-        from .config_g68 import DICCIONARIO_PESOS, KEYWORDS_DEPT
-    except:
-        pass
+import numpy as np
 
 class SentimentEngine:
-    def __init__(self):
-        self.model, self.vectorizer = None, None
-        self.stemmer = SnowballStemmer('spanish')
+    """
+    Clase encargada de la interacción directa con los modelos de Machine Learning (Sklearn).
+    Maneja la carga, predicción y extracción de importancia de características.
+    """
+    def __init__(self, model_dir):
+        self.model_path = os.path.join(model_dir, "sentiment_model.pkl")
+        self.vectorizer_path = os.path.join(model_dir, "tfidf_vectorizer.pkl")
         
-        # 2. Búsqueda inteligente de modelos
-        base_project = os.path.dirname(src_dir) 
+        self.model = joblib.load(self.model_path)
+        self.vectorizer = joblib.load(self.vectorizer_path)
         
-        rutas_posibles = [
-            os.path.join(base_project, 'data', 'models'),
-            os.path.join(os.getcwd(), 'data', 'models'),
-            os.path.join(current_dir, '..', '..', 'data', 'models')
-        ]
+        # Mapeo de índices para consistencia con clases del modelo (0, 1, 3)
+        self.target_names = {0: "Negativo", 1: "Positivo", 3: "Neutro"}
 
-        for path in rutas_posibles:
-            m_path = os.path.join(path, 'sentiment_model.pkl')
-            v_path = os.path.join(path, 'tfidf_vectorizer.pkl')
-            
-            if os.path.exists(m_path):
-                try:
-                    self.model = joblib.load(m_path)
-                    self.vectorizer = joblib.load(v_path)
-                    print(f"✅ Modelos ML cargados exitosamente desde: {path}")
-                    break
-                except Exception as e:
-                    print(f"❌ Error al cargar .pkl en {path}: {e}")
+    def predict_raw(self, text):
+        """Devuelve la clase numérica y la probabilidad máxima del modelo."""
+        vec = self.vectorizer.transform([text])
+        prediction = self.model.predict(vec)[0]
+        probabilities = self.model.predict_proba(vec)[0]
         
-        if not self.model:
-            print("⚠️ Advertencia: No se encontraron los archivos .pkl. La IA usará valores Neutrales por defecto.")
+        # Obtenemos la probabilidad de la clase predicha para reportar confianza
+        cls_list = list(self.model.classes_)
+        actual_idx = cls_list.index(prediction)
+        confidence = probabilities[actual_idx]
+        
+        return prediction, confidence
 
-    def predict_raw(self, text: str):
-        """Predicción técnica con lógica de IA cruda."""
-        if not self.model or not self.vectorizer:
-            return "Neutral", 0.5
+    def get_top_features_from_model(self, text, top_n=5):
+        """
+        Extrae las palabras del texto que más influyeron en la decisión del modelo 
+        basándose en los coeficientes (coef_).
+        """
+        try:
+            vec = self.vectorizer.transform([text])
+            pred_class = self.model.predict(vec)[0]
             
-        txt_limpio = re.sub(r'[^a-zñáéíóúü\s]', ' ', text.lower())
-        vec = self.vectorizer.transform([txt_limpio])
-        
-        # Mapa: 0: Negativo, 1: Neutro, 2: Positivo
-        probs = self.model.predict_proba(vec)[0]
-        
-        idx_max = probs.argmax()
-        pred = self.model.classes_[idx_max]
-        
-        # Usamos la probabilidad de 'Positivo' (índice 2) como base para el ajuste del motor híbrido
-        prob_positiva = float(probs[2])
-        
-        return pred, prob_positiva
+            # Navegamos por el CalibratedClassifierCV si es necesario
+            base_model = self.model
+            if hasattr(self.model, 'calibrated_classifiers_'):
+                base_model = self.model.calibrated_classifiers_[0].estimator
+            
+            if not hasattr(base_model, 'coef_'):
+                return []
+
+            # Mapeo de clase predicha al índice de coeficientes
+            cls_list = list(self.model.classes_)
+            class_idx = cls_list.index(pred_class)
+            
+            # Coeficientes para la clase específica
+            coef = base_model.coef_[class_idx]
+            feature_names = self.vectorizer.get_feature_names_out()
+            
+            # Identificamos qué features del texto están activas
+            vec_array = vec.toarray()[0]
+            active_indices = np.where(vec_array > 0)[0]
+            
+            # Creamos lista de (feature, importancia)
+            impacts = []
+            for idx in active_indices:
+                impacts.append((feature_names[idx], coef[idx] * vec_array[idx]))
+            
+            # Ordenamos por magnitud de impacto
+            impacts.sort(key=lambda x: abs(x[1]), reverse=True)
+            return impacts[:top_n]
+            
+        except Exception as e:
+            # Fallback silencioso para no romper el flujo principal
+            return []

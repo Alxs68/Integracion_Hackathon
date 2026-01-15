@@ -1,57 +1,76 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 import os
 import sys
-from fastapi import FastAPI
-from pydantic import BaseModel
 
-# --- CONFIGURACIÓN DE RUTAS ---
-current_dir = os.path.dirname(os.path.abspath(__file__))
-src_dir = os.path.dirname(current_dir)
-if src_dir not in sys.path:
-    sys.path.append(src_dir)
+# Blindaje de rutas para imports locales
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from engine.sentiment_engine import SentimentEngine
 from motor_hibrido import enriquecer_respuesta
 
 app = FastAPI(
-    title="G68 Sentiment API",
-    description="Motor de Análisis de Sentimiento - NoCountry Hackathon"
+    title="G68 Sentiment API - Supreme Ed.",
+    description="API Híbrida de Análisis de Sentimiento con Refinamiento Semántico.",
+    version="2.0.0"
 )
 
-# Inicializamos el motor de IA
-ai_engine = SentimentEngine()
+# Inicialización de motores
+try:
+    # Ajustamos la ruta para que encuentre los modelos en ../../data/models
+    base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    model_path = os.path.join(base_path, "data", "models")
+    ai_engine = SentimentEngine(model_dir=model_path)
+    print(f"✅ Modelos ML cargados exitosamente desde: {model_path}")
+except Exception as e:
+    print(f"❌ Error crítico cargando modelos: {e}")
+    ai_engine = None
 
 class SentimentRequest(BaseModel):
-    text: str
+    text: str = Field(..., min_length=1, max_length=2500)
 
-@app.get("/")
-def home():
-    return {"status": "G68 Online", "model_loaded": ai_engine.model is not None}
+class SentimentResponse(BaseModel):
+    prevision: str
+    probabilidad: float
+    top_features: str
 
-@app.post("/predict/sentiment")
-@app.post("/sentiment")
-async def predict(request: SentimentRequest):
+@app.post("/sentiment", response_model=SentimentResponse)
+async def analyze_sentiment(request: SentimentRequest):
     """
-    Endpoint para análisis de sentimiento.
-    Cumple estrictamente con el contrato: {'prevision': str, 'probabilidad': float}
+    Endpoint principal de análisis.
+    Recibe texto y devuelve sentimiento, probabilidad y explicabilidad (top features).
     """
-    # 1. Validación básica
     if not request.text or len(request.text.strip()) < 3:
-        return {"prevision": "Neutro", "probabilidad": 0.5, "note": "Texto muy corto"}
+        return {
+            "prevision": "Neutral",
+            "probabilidad": 0.5,
+            "top_features": "texto insuficiente"
+        }
 
-    # 2. Predicción Base IA
+    if not ai_engine:
+        raise HTTPException(status_code=500, detail="Motor de IA no inicializado")
+
+    # 1. Obtener predicción base de la IA
     pred_ia, prob_ia = ai_engine.predict_raw(request.text)
     
-    # 3. Refinamiento con Motor Híbrido (Interno)
-    res_hibrido = enriquecer_respuesta(request.text, pred_ia, prob_ia)
+    # 2. Refinar con el Motor Híbrido G68
+    res = enriquecer_respuesta(request.text, pred_ia, prob_ia, ai_engine)
     
-    # 4. Formateo de salida estricto con los dos campos oficiales
-    # Limpiamos prefijos si existen
-    label = res_hibrido["previsión"].replace("[+] ", "").replace("[-] ", "")
-    
+    # 3. Normalización final según contrato estricto
+    label = res["previsión"]
+    if label == "Neutro":
+        label = "Neutral"
+        
     return {
         "prevision": label,
-        "probabilidad": float(res_hibrido["probabilidad"])
+        "probabilidad": res["probabilidad"],
+        "top_features": res["top_features"]
     }
+
+@app.get("/health")
+async def health_check():
+    return {"status": "online", "engine": "G68-Supreme"}
 
 if __name__ == "__main__":
     import uvicorn

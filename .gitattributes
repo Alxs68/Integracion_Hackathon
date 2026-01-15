@@ -1,0 +1,5 @@
+# Enforce LF line endings for text files (including notebooks)
+*.ipynb text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+*.json  text eol=lf

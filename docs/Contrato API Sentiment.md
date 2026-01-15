@@ -28,7 +28,7 @@ El flujo de datos sigue un esquema de **Microservicios** para garantizar indepen
 
 - **Método:** `POST`
     
-- **Endpoint:** `/predict/sentiment`
+- **Endpoint:** `/sentiment`
     
 - **Puerto:** `8080`
     
@@ -49,8 +49,9 @@ Esta tabla define el **diccionario de datos** exacto que tu API entrega al Backe
 
 |**Campo**|**Tipo**|**Valores permitidos**|**Descripción**|
 |---|---|---|---|
-|**`prevision`**|**String**|`"Positivo"`, `"Neutro"`, `"Negativo"`|Representa la etiqueta categórica asignada por el modelo de IA tras analizar el texto.|
+|**`prevision`**|**String**|`"Positivo"`, `"Neutral"`, `"Negativo"`|Representa la etiqueta categórica asignada por el modelo de IA tras analizar el texto.|
 |**`probabilidad`**|**Float**|`0.0` a `1.0`|Indica el nivel de confianza del modelo en su predicción, expresado en formato decimal (ej: 0.945).|
+|**`top_features`**|**String**|Libre|Lista de n-gramos o palabras clave que más influyeron en la decisión, separados por ` | `.|
 
 ---
 
@@ -60,7 +61,7 @@ Esta tabla define el **diccionario de datos** exacto que tu API entrega al Backe
 2. Ejecutar este comando en una nueva terminal
 
 ```bash
-curl -X POST http://localhost:8080/predict/sentiment \
+curl -X POST http://localhost:8080/sentiment \
      -H "Content-Type: application/json" \
      -d '{"text": "Estoy muy feliz con el servicio"}'
 ```
@@ -117,9 +118,9 @@ Imagina el proyecto como un **Restaurante de Alta Cocina**:
     
 7. **El Sommelier (Tu API de Python):** Vive dentro de `main.py`. Recibe la servilleta por la ventanilla, usa su "olfato" (**Modelo .pkl**) y redacta el resultado.
     
-8. **El Post-it (JSON de salida):** **(El objeto)** Es el **formato físico** del mensaje. Representa la estructura técnica que acordaron en el contrato: un papelito pequeño donde solo caben dos datos: `prevision` y `probabilidad`. No es una carta larga, es una respuesta rápida y estandarizada.
+8. **El Post-it (JSON de salida):** **(El objeto)** Es el **formato físico** del mensaje. Representa la estructura técnica que acordaron en el contrato: un papelito pequeño donde solo caben tres datos clave: `prevision`, `probabilidad` y `top_features`. No es una carta larga, es una respuesta rápida y estandarizada.
     
-9. **El Diagnóstico (La Respuesta):** **(El contenido):** Es la **conclusión** que el Sommelier (tu IA) escribió en ese papel. Es el valor del resultado (por ejemplo: "Positivo") tras haber analizado la reseña.
+9. **El Diagnóstico (La Respuesta):** **(El contenido):** Es la **conclusión** que el Sommelier (tu IA) escribió en ese papel. Es el valor del resultado (por ejemplo: "Positivo") tras haber analizado la reseña, junto con las notas de cata (Top Features) que justifican su veredicto.
 
 ### El Sistema de Alarmas
 
