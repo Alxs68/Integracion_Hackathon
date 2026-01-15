@@ -1,15 +1,16 @@
 package com.sentiment.api.controller;
 
 
+import com.sentiment.api.entity.SentimentAnalysis;
 import com.sentiment.api.service.SentimentService;
 import com.sentiment.api.dto.SentimentRequest;
 import com.sentiment.api.dto.SentimentResponse;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 @RestController
+@RequestMapping("/sentiment")
 public class SentimentController    {
 
     private final SentimentService sentimentService;
@@ -22,8 +23,18 @@ public class SentimentController    {
      Endpoint público para análisis de sentimiento.
      Valida input y delega la lógica al servicio.
      */
-    @PostMapping("/sentiment")
+    @PostMapping
     public SentimentResponse sentiment(@Valid @RequestBody SentimentRequest request) {
         return sentimentService.analyze(request.text());
+    }
+
+    @GetMapping("/obtener")
+    public List<SentimentAnalysis> getByPrevision(@RequestParam String prevision){
+        return sentimentService.getByPrevision(prevision);
+    }
+
+    @GetMapping("/{id}")
+    public SentimentAnalysis getByid(@PathVariable Long id){
+        return sentimentService.getByid(id);
     }
 }

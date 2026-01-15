@@ -5,8 +5,11 @@ import com.sentiment.api.integration.client.MlClient;
 import com.sentiment.api.dto.SentimentResponse;
 import com.sentiment.api.integration.client.dto.MlSentimentResponse;
 import com.sentiment.api.repository.SentimentAnalysisRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.time.LocalDateTime;
 
 @Service
@@ -36,6 +39,13 @@ public class SentimentService {
                 response.prevision(),
                 response.probabilidad()
         );
+    }
+    public List<SentimentAnalysis> getByPrevision(String prevision) {
+        return repository.findByPrevision(prevision);
+    }
 
+    public SentimentAnalysis getByid(Long id){
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No encontrado"));
     }
 }
