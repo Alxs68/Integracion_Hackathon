@@ -58,7 +58,7 @@ async def analyze_sentiment(request: SentimentRequest):
     res = enriquecer_respuesta(request.text, pred_ia, prob_ia, ai_engine)
     
     # 3. Normalización final según contrato estricto
-    label = res["previsión"]
+    label = res["prevision"]
     if label == "Neutro":
         label = "Neutral"
         

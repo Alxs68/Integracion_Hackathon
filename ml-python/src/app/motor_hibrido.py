@@ -146,7 +146,7 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia, engine=None):
     top_features = _generar_top_features(texto, hits, engine)
 
     return {
-        "previsión": final_pred,
+        "prevision": final_pred,
         "probabilidad": round(prob_final, 4),
         "top_features": top_features,
         "explicabilidad_interna": {  # Propuesta para mañana
@@ -164,10 +164,10 @@ def _audit_console(txt, p_ia, pr_ia, aj, hits, dp, f_p, f_pr):
         p_ia_n = mapa.get(p_ia_int, p_ia)
     except (ValueError, TypeError):
         p_ia_n = p_ia  # fallback to original value if conversion fails
-    print(f"\n🔍 [G68 AUDIT] '{txt[:50]}...'")
-    print(f"   ├─ IA: {p_ia_n} ({pr_ia:.2f}) | Ajuste: {aj:.2f}")
-    if hits: print(f"   ├─ Señales: {[h['word'] for h in hits[:5]]}")
-    print(f"   └─ FINAL: {f_p} ({f_pr:.2f})")
+    print(f"\n🔍 [G68 AUDIT] '{txt[:50]}...'", flush=True)
+    print(f"   ├─ IA: {p_ia_n} ({pr_ia:.2f}) | Ajuste: {aj:.2f}", flush=True)
+    if hits: print(f"   ├─ Señales: {[h['word'] for h in hits[:5]]}", flush=True)
+    print(f"   └─ FINAL: {f_p} ({f_pr:.2f})", flush=True)
 
 def _generar_top_features(texto, hits, engine):
     """Extrae las 3 señales más importantes del texto."""
