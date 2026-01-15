@@ -11,9 +11,9 @@ from engine.sentiment_engine import SentimentEngine
 from motor_hibrido import enriquecer_respuesta
 
 app = FastAPI(
-    title="G68 Sentiment API - Supreme Ed.",
-    description="API Híbrida de Análisis de Sentimiento con Refinamiento Semántico.",
-    version="2.0.0"
+    title="Modelo Integral para el Análisis de Sentimientos",
+    description="API Híbrida de Análisis de Sentimiento con Refinamiento Semántico (G68 Supreme).",
+    version="2.1.0"
 )
 
 # Inicialización de motores

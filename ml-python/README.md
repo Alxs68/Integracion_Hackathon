@@ -1,4 +1,4 @@
-# 🧠 Motor Híbrido G68 SUPREME (Arquitectura de Vanguardia)
+# 🧠 Modelo Integral para el Análisis de Sentimientos (G68 SUPREME)
 
 A diferencia de un análisis de sentimientos genérico, el modelo **G68** utiliza una arquitectura de doble capa que combina **Machine Learning Pro (Calibrated LinearSVC)** con una capa de **Inteligencia Semántica** propietaria:
 
