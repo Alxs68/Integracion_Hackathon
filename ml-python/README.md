@@ -1,42 +1,53 @@
 # 🧠 Modelo Integral para el Análisis de Sentimientos (G68 SUPREME)
 
-A diferencia de un análisis de sentimientos genérico, el modelo **G68** utiliza una arquitectura de doble capa que combina **Machine Learning Pro (Calibrated LinearSVC)** con una capa de **Inteligencia Semántica** propietaria:
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-F7931E?logo=scikitlearn)](https://scikit-learn.org/)
 
-### 🛡️ Auditoría de Performance (G68 Native Benchmark)
-Métricas reales validadas mediante stress tests locales (Lote de 100 peticiones):
-- **Latencia de Procesamiento**: **~4.4 ms** 🚀 (Tiempo neto de inferencia).
-- **Consumo de Memoria (RAM)**: **~78 MB** 📦 (Ultra-ligero, óptimo para Edge Computing).
-- **Throughput (Capacidad)**: **~224 req/s** (Procesamiento masivo concurrente).
-- **Precisión (Accuracy)**: **85.0%** en casos complejos (Auditado con lógica de veto).
+## 🌟 Propuesta de Valor
+A diferencia de los motores de análisis genéricos, el **Modelo G68** ha sido diseñado bajo una arquitectura de **Doble Capa**. Combina la potencia del Machine Learning estadístico (*Calibrated LinearSVC*) con una capa propietaria de **Inteligencia Semántica** que garantiza la seguridad del negocio ante casos críticos (ironía, crisis de marca y quejas de seguridad).
 
-### 🔬 Compilado de Reglas Semánticas (Explicabilidad Avanzada)
-Durante la ejecución, el motor proporciona una auditoría detallada en consola basada en sus pilares lógicos:
+---
 
-1.  **Veto Crítico (Veto Soberano)**: Si se detecta un término de alto riesgo (ej. *estafa, robo, chinches*), el modelo prioriza la alerta y fuerza **Negativo (Certidumbre: 0.99)**.
-2.  **Vinculador de Contexto (N-Gram Bonding)**: Análisis de frases compuestas para capturar la esencia de la queja.
-3.  **Boost Semántico (1.5x)**: Los intensificadores multiplican el peso del sentimiento detectado.
-4.  **Mapeo 1-a-1 de Áreas**: Clasificación automática entre 5 Departamentos Críticos: **Marketing, Operaciones, Higiene, Atencion, Admin**.
-5.  **Lógica de Contraste ("Reset Emocional")**: Identificación de conectores (*pero, aunque*) para detectar ironía.
-6.  **Inversión Semántica**: Manejo experto de negaciones mediante ventana de lookback.
+## 🏎️ Rendimiento Validado (Benchmark G68)
+El motor ha sido sometido a pruebas de estrés locales para asegurar una integración fluida con el ecosistema Backend/Frontend:
 
-## 📁 Estructura del Proyecto
+| Métrica | Resultado | Valor de Negocio |
+| :--- | :--- | :--- |
+| **Latencia Real** | **4.15 ms** 🚀 | Respuesta instantánea en la interfaz. |
+| **Uso de RAM** | **77.89 MB** 📦 | Optimizado para microservicios ligeros. |
+| **Throughput** | **+220 req/s** | Capacidad de análisis masivo en tiempo real. |
+| **Precisión** | **85.0%** | Alta fiabilidad en clasificaciones ternarias. |
+
+---
+
+## 🔬 Pilares Tecnológicos del Motor
+Nuestra lógica de "Vanguardia Semántica" se basa en 3 pilares clave:
+
+1. **Veto Crítico**: Identificación inmediata de términos de alto impacto para la seguridad y reputación del negocio.
+2. **Vinculador de Contexto**: Análisis de frases compuestas para capturar la intención real del feedback.
+3. **Detector de Sarcasmo e Ironía**: Capacidad de neutralizar falsos positivos mediante análisis de conectores de contraste.
+
+---
+
+## 📁 Ecosistema de Entrega
 ```text
 ml-python/
-├── data/
-│   ├── models/        # Modelos entrenados (.pkl)
-│   └── raw/           # Master Dataset y Benchmarks
-├── notebooks/         # Reporte técnico interactivo (G68 Playground)
-├── src/
-│   ├── app/           # Punto de entrada de la API y Motor Híbrido
-│   └── engine/        # Motor de IA (SentimentEngine)
-├── utils/             # Scripts de limpieza y consolidación
-└── requirements.txt   # Dependencias de Data Science
+├── data/models        # Binarios del modelo entrenado (.pkl)
+├── notebooks/         # Showcase interactivo y reportes (G68 Playground)
+├── src/app/           # Punto de entrada de la API y Motor Híbrido
+└── requirements.txt   # Dependencias de producción
 ```
 
-## 🛠️ Instalación y Ejecución
-1. **Instalar dependencias:** `pip install -r requirements.txt`
-2. **Ejecutar la API:** `python src/app/main.py` (Puerto 8080)
+## 🛠️ Despliegue Rápido
+1. **Ambiente:** `pip install -r requirements.txt`
+2. **Servidor:** `python src/app/main.py` (Exponiendo puerto 8080)
 
-## 📊 Documentación y Swagger
-- **Notebook**: `/ml-python/notebooks/Reporte_Modelado_Sentimiento.ipynb`
-- **Swagger UI**: [http://localhost:8080/docs](http://localhost:8080/docs)
+## 📊 Documentación de Soporte
+*   **Showcase Interactivo**: `/ml-python/notebooks/Reporte_Modelado_Sentimiento.ipynb`
+*   **Contrato Técnico (Swagger)**: [http://localhost:8080/docs](http://localhost:8080/docs)
+
+---
+> **Nota de Equipo:** Este proyecto representa la unión entre Data Science y una visión de negocio orientada a la toma de decisiones basada en datos.
+
+---
