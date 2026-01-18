@@ -1,4 +1,4 @@
-# 🧠 Modelo Integral para el Análisis de Sentimientos (G68 SUPREME)
+# 🧠 Modelo Integral para el Análisis de Sentimientos
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -33,19 +33,26 @@ Nuestra lógica de "Vanguardia Semántica" se basa en 3 pilares clave:
 ## 📁 Ecosistema de Entrega
 ```text
 ml-python/
-├── data/models        # Binarios del modelo entrenado (.pkl)
-├── notebooks/         # Showcase interactivo y reportes (G68 Playground)
-├── src/app/           # Punto de entrada de la API y Motor Híbrido
-└── requirements.txt   # Dependencias de producción
+├── data/              # Datasets y modelos (.pkl)
+├── src/
+│   ├── app/           # API FastAPI y lógica híbrida
+│   └── engine/        # Motor de IA (SentimentEngine)
+├── scripts/           # Entrenamiento y Benchmarks
+├── tests/             # Pruebas automatizadas
+└── requirements.txt   # Dependencias de Data Science
 ```
 
-## 🛠️ Despliegue Rápido
-1. **Ambiente:** `pip install -r requirements.txt`
-2. **Servidor:** `python src/app/main.py` (Exponiendo puerto 8080)
+## 🛠️ Instalación y Ejecución
+1. **Instalar dependencias:** `pip install -r requirements.txt`
+2. **Ejecutar la API:** 
+   ```bash
+   cd src/app
+   uvicorn main:app --host 0.0.0.0 --port 8080
+   ```
 
-## 📊 Documentación de Soporte
-*   **Showcase Interactivo**: `/ml-python/notebooks/Reporte_Modelado_Sentimiento.ipynb`
-*   **Contrato Técnico (Swagger)**: [http://localhost:8080/docs](http://localhost:8080/docs)
+## 📊 Documentación y Swagger
+- **Notebook**: `/ml-python/notebooks/Reporte_Modelado_Sentimiento.ipynb`
+- **Contrato Técnico (Swagger)**: [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ---
 > **Nota de Equipo:** Este proyecto representa la unión entre Data Science y una visión de negocio orientada a la toma de decisiones basada en datos.

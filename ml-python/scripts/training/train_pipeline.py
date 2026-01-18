@@ -11,7 +11,8 @@ from sklearn.utils import resample
 
 # 1. CARGA DE DATOS
 try:
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # La ruta base es ml-python/, subiendo desde scripts/training/
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     input_file = os.path.join(base_dir, "data", "raw", "Big_AHR.csv")
     golden_file = os.path.join(base_dir, "data", "raw", "golden_benchmark_325.csv")
     

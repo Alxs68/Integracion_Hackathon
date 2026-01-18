@@ -10,7 +10,8 @@ from sklearn.metrics import classification_report
 from sklearn.utils import resample
 
 # 1. Rutas y Configuración
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# La ruta base es ml-python/, subiendo desde scripts/training/
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 raw_data_path = os.path.join(base_dir, "data", "raw", "Big_AHR.csv")
 golden_data_path = os.path.join(base_dir, "data", "raw", "golden_benchmark_325.csv")
 model_path = os.path.join(base_dir, "data", "models", "sentiment_model.pkl")

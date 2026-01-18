@@ -4,8 +4,8 @@ import os
 import sys
 
 # Blindaje de rutas para imports locales
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # ml-python/src
+sys.path.append(BASE_DIR)
 
 from engine.sentiment_engine import SentimentEngine
 from motor_hibrido import enriquecer_respuesta
