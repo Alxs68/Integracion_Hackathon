@@ -4,10 +4,12 @@ import com.sentiment.api.entity.SentimentAnalysis;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
 public interface SentimentAnalysisRepository extends JpaRepository<SentimentAnalysis, Long> {
     List<SentimentAnalysis> findByPrevision(String prevision);
     SentimentAnalysis findByid(Long id);
+    List<SentimentAnalysis> findByFechaBetween(Timestamp start, Timestamp end);
 }

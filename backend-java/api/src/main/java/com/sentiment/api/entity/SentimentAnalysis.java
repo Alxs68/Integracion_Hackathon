@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,5 +30,5 @@ public class SentimentAnalysis {
     private double probabilidad;
 
     @Column(nullable = false)
-    private LocalDateTime fecha;
+    private Timestamp fecha;
 }

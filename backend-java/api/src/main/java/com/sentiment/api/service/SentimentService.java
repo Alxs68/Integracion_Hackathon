@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -31,7 +34,7 @@ public class SentimentService {
         entity.setText(text);
         entity.setPrevision(response.prevision());
         entity.setProbabilidad(response.probabilidad());
-        entity.setFecha(LocalDateTime.now());
+        entity.setFecha(new Timestamp(System.currentTimeMillis()));
 
         repository.save(entity);
 
@@ -45,7 +48,12 @@ public class SentimentService {
     }
 
     public SentimentAnalysis getByid(Long id){
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
+        return repository.findByid(id);
+    }
+
+    public List<SentimentAnalysis> getByFecha(LocalDate fecha){
+        Timestamp start = Timestamp.valueOf(fecha.atStartOfDay());
+        Timestamp end = Timestamp.valueOf(fecha.plusDays(1).atStartOfDay());
+        return repository.findByFechaBetween(start, end);
     }
 }

@@ -6,8 +6,10 @@ import com.sentiment.api.service.SentimentService;
 import com.sentiment.api.dto.SentimentRequest;
 import com.sentiment.api.dto.SentimentResponse;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("/sentiment")
@@ -36,5 +38,10 @@ public class SentimentController    {
     @GetMapping("/{id}")
     public SentimentAnalysis getByid(@PathVariable Long id){
         return sentimentService.getByid(id);
+    }
+
+    @GetMapping("/fecha/{fecha}")
+    public List<SentimentAnalysis> getByFecha(@PathVariable @DateTimeFormat (iso = DateTimeFormat.ISO.DATE)LocalDate fecha){
+        return sentimentService.getByFecha(fecha);
     }
 }
