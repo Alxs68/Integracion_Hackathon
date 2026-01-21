@@ -12,6 +12,7 @@ DICCIONARIO_PESOS = {
     "sangre": -0.9, "moho": -0.8, "veneno": -0.8, "terror": -1.0, "horror": -1.0,
     "maltrato": -0.9, "inundacion": -0.9, "ignoro": -0.9, "desprecio": -0.8,
     "poco honesto": -0.9, "nada honesto": -1.0, "engañoso": -0.8, "grosero": -0.9,
+    "engaño publicitario": -0.9, "publicidad engañosa": -0.9,
     "cloaca": -0.9, "suciedad": -0.8, "mugre": -0.8, "ratas": -0.9, "insectos": -0.8,
     
     # --- NEGATIVOS UNIVERSALES Y DE SERVICIO ---
@@ -34,6 +35,7 @@ DICCIONARIO_PESOS = {
     "laberinto": -0.8, "desapareció": -0.9, "desaparecio": -0.9,
     "imbécil": -1.0, "imbecil": -1.0, "ladrillos": -0.8,
     "hostal": -0.4, "imagina": -0.5, "vender": -0.3,
+    "pretencioso": -0.7, "pretenciosa": -0.7, "pretenciosos": -0.7, "pretenciosas": -0.7,
     
     # --- POSITIVOS DE ÉLITE (AJUSTADOS PARA SARCASMO) ---
     "excelente": 0.8, "recomendado": 0.8, "bueno": 0.5, "rápido": 0.5,

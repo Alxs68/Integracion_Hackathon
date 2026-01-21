@@ -4,11 +4,11 @@ import os
 import sys
 
 # Blindaje de rutas para imports locales
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # ml-python/src
+sys.path.append(BASE_DIR)
 
 from engine.sentiment_engine import SentimentEngine
-from motor_hibrido import enriquecer_respuesta
+from app.motor_hibrido import enriquecer_respuesta
 
 app = FastAPI(
     title="Modelo Integral para el Análisis de Sentimientos",
@@ -35,11 +35,14 @@ class SentimentResponse(BaseModel):
     probabilidad: float
     top_features: str
 
-@app.post("/sentiment", response_model=SentimentResponse)
+@app.post("/predict/sentiment", response_model=SentimentResponse)
 async def analyze_sentiment(request: SentimentRequest):
     """
-    Endpoint principal de análisis.
-    Recibe texto y devuelve sentimiento, probabilidad y explicabilidad (top features).
+    Punto de entrada principal.
+    Recibe el texto del usuario y nos devuelve:
+    1. Sentimiento (Positivo/Negativo/Neutral)
+    2. Probabilidad (Qué tan seguro está)
+    3. Explicación (Palabras clave)
     """
     if not request.text or len(request.text.strip()) < 3:
         return {
@@ -49,15 +52,15 @@ async def analyze_sentiment(request: SentimentRequest):
         }
 
     if not ai_engine:
-        raise HTTPException(status_code=500, detail="Motor de IA no inicializado")
+        raise HTTPException(status_code=500, detail="El motor de IA no está listo")
 
-    # 1. Obtener predicción base de la IA
+    # 1. Preguntarle al modelo de Inteligencia Artificial (Deep Learning)
     pred_ia, prob_ia = ai_engine.predict_raw(request.text)
     
-    # 2. Refinar con el Motor Híbrido G68
+    # 2. Refinar la respuesta con nuestras reglas de negocio (G68)
     res = enriquecer_respuesta(request.text, pred_ia, prob_ia, ai_engine)
     
-    # 3. Normalización final según contrato estricto
+    # 3. Asegurar que el formato sea el correcto antes de responder
     label = res["prevision"]
     if label == "Neutro":
         label = "Neutral"
