@@ -1,46 +1,36 @@
-# Proyecto de Análisis de Sentimiento - Equipo G68 🚀
+# 🚀 Guía de Lanzamiento - Sistema Híbrido G68
 
-Bienvenido al sistema de análisis de opiniones desarrollado por el equipo G68. Este proyecto conecta un modelo de Inteligencia Artificial con una interfaz web amigable para visualizar los resultados en tiempo real.
+Este proyecto utiliza **Java 21 (LTS)** y **Python 3.10+**. Para que el sistema funcione correctamente en sus equipos tras bajar la rama, sigan estos pasos:
 
-## 🏗️ ¿Cómo está organizado?
+## 1. Requisitos Previos
+*   **JDK 21:** Es obligatorio (Recomendado: Microsoft OpenJDK 21).
+*   **Python:** Con el entorno virtual activado y dependencias instaladas.
 
-Dividimos el proyecto en tres partes principales para mantener el orden:
+## 2. Configuración de Java (Terminal PowerShell)
+Si el comando `.\mvnw` arroja un error de versión o de `JAVA_HOME`, ejecuten este bloque antes de lanzar (ajusten la ruta si es necesario):
 
-1.  **Interfaz Web (Frontend)**: Es la página que ve el usuario. Muestra los gráficos y permite escribir textos para analizar.
-2.  **Servidor Principal (Java)**: Es el "cerebro" que conecta todo. Recibe los datos de la web y los guarda.
-3.  **Motor de IA (Python)**: Es el experto. Recibe el texto y nos dice si el sentimiento es Positivo, Negativo o Neutral.
-
-## 🚀 Guía de Inicio Rápido
-
-Para poner todo en marcha, sigue estos pasos:
-
-### 1. Encender la Inteligencia Artificial
-```bash
-cd ml-python
-pip install -r requirements.txt
-python -m uvicorn src.app.main:app --port 8080
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-21.0.5.11-hotspot"
+$env:Path = "$env:JAVA_HOME\bin;" + $env:Path
 ```
 
-### 2. Iniciar el Servidor
-```bash
+## 3. Comandos de Ejecución
+Sigan este orden en terminales separadas:
+
+### A. Servicio ML (Python)
+```powershell
+python ml-python/src/app/main.py
+```
+
+### B. Backend API (Java 21)
+```powershell
 cd backend-java/api
-./mvnw spring-boot:run
+.\mvnw spring-boot:run
 ```
 
-### 3. Abrir la Web
-Entra en tu navegador a: `http://localhost:8000`
+## 4. Visualización
+Accedan a la interfaz avanzada en:
+👉 [http://localhost:8000/index.html](http://localhost:8000/index.html)
 
-## 📂 Carpetas del Proyecto
-
-- `/backend-java`: Código del servidor en Java.
-- `/ml-python`: Modelos de IA y scripts de Python.
-- `/frontend`: Archivos de la página web (HTML, CSS, JS).
-- `/scripts`: Herramientas útiles.
-- `/docs`: Documentación y manuales.
-
-## ✨ Lo que hace nuestro sistema
-
-- **Análisis Inteligente**: Entiende si un comentario es bueno o malo.
-- **Gráficos en Vivo**: Muestra estadísticas al instante.
-- **Detector de Confianza**: Nos dice qué tan seguro está el modelo de su respuesta (ahora con gráfico de caja).
-- **Historial**: Guarda todo lo que analizamos para revisarlo después.
+---
+*G68 - Calidad y Sentimiento en Tiempo Real* 🚀
