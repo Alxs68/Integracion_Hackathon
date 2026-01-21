@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //Error texto vacio
+    // Error texto vacio
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
 
@@ -25,17 +25,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
-    //JSON mal formado
+    // JSON mal formado
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleWrongJsonFormat(HttpMessageNotReadableException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse("JSON invalido"));
     }
 
     public static class MlServiceException extends RuntimeException {
-        public MlServiceException(String message){
+        public MlServiceException(String message) {
             super(message);
         }
     }
+
     @ExceptionHandler(MlServiceException.class)
     public ResponseEntity<ErrorResponse> handleMlUnavailable(
             MlServiceException ex,

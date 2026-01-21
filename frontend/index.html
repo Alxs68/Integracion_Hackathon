@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sentimental IA – Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      H12-25-L-Equipo 68
+    </div>
+
+    <nav class="topbar-center">
+      <ul class="nav-links">
+        <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+        <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+        <li><a href="#estadisticas" class="nav-link">Estadísticas</a></li>
+        <li><a href="#docs" class="nav-link">Docs</a></li>
+        <li><a href="#recursos" class="nav-link">Recursos</a></li>
+      </ul>
+    </nav>
+
+    <div class="topbar-right">
+      <button id="theme-toggle" class="btn-theme-toggle" aria-label="Cambiar tema">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+      <button type="button" class="btn-login">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- Hero inicial (se oculta después del primer envío válido) -->
+    <section class="hero">
+      <h1 class="branding-title">Sentimental IA</h1>
+      <h2 class="branding-subtitle">Análisis inteligente de comentarios</h2>
+    </section>
+
+    <section class="conversation" id="inicio">
+      <!-- Selector de modelo / endpoint activo -->
+      <div class="api-selector">
+        <label for="apiSelect">Modelo activo:</label>
+        <select id="apiSelect">
+          <option value="DEV_BACKEND">Sistema Híbrido G68 (Local)</option>
+          <option value="MODEL_LINEAR">Modelo Linear (Temporal)</option>
+          <option value="MODEL_BILSTM">Modelo Bi-LSTM OCI</option>
+        </select>
+      </div>
+
+      <!-- Área de entrada principal (único textInput) -->
+      <section class="input-area">
+        <div class="input-wrapper">
+          <textarea id="textInput" class="search-input" placeholder="Haz tu comentario..." rows="3" spellcheck="true"
+            autocomplete="off"></textarea>
+
+          <!-- Icono (+) adjuntar -->
+          <button type="button" id="attachButton" class="input-action input-attach" aria-label="Adjuntar archivo">
+            +
+          </button>
+
+          <!-- Selector de idioma ES/PT -->
+          <select id="langSelect" class="input-action input-lang" aria-label="Seleccionar idioma">
+            <option value="es">ES</option>
+            <option value="pt">PT</option>
+          </select>
+
+          <!-- Botón limpiar (X) -->
+          <button type="button" id="clearButton" class="input-action input-clear hidden" aria-label="Limpiar texto">
+            ×
+          </button>
+
+          <!-- Botón enviar (flecha ↑) -->
+          <button type="button" id="sendButton" class="input-action input-send hidden"
+            aria-label="Analizar sentimiento">
+            ↑
+          </button>
+        </div>
+
+        <div class="batch-action-container">
+          <button id="btnImportCSV" class="btn-import-batch">
+            <i class="fas fa-file-csv"></i> Procesar Lote CSV
+          </button>
+          <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+        </div>
+      </section>
+
+      <!-- Resultados aparecen DEBAJO del input -->
+      <div id="history" class="history"></div>
+    </section>
+
+    <!-- Sección Dashboard: Resumen y Estadísticas rápidas -->
+    <section id="dashboard" class="content-section hidden">
+      <div class="section-header-row">
+        <h2 class="section-title">Panel de Auditoría de Sentimiento</h2>
+        <div class="date-filters disabled-feature" title="Próximamente: Filtrado por Rango de Fechas">
+          <input type="date" id="filter-start" class="date-input" disabled title="Próximamente">
+          <span class="date-sep">→</span>
+          <input type="date" id="filter-end" class="date-input" disabled title="Próximamente">
+          <button id="btn-apply-filters" class="btn-apply" disabled
+            style="opacity: 0.5; cursor: not-allowed;">Filtrar</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Total Análisis</span>
+        </div>
+        <div class="stat-card positive">
+          <span class="stat-value" id="stat-pos">0</span>
+          <span class="stat-label">Positivos</span>
+        </div>
+        <div class="stat-card neutral">
+          <span class="stat-value" id="stat-neu">0</span>
+          <span class="stat-label">Neutros</span>
+        </div>
+        <div class="stat-card negative">
+          <span class="stat-value" id="stat-neg">0</span>
+          <span class="stat-label">Negativos</span>
+        </div>
+      </div>
+
+      <div class="dashboard-charts">
+        <div class="chart-container">
+          <h3>Distribución General</h3>
+          <div class="donut-display">
+            <div id="sentiment-donut" class="donut-chart"></div>
+            <div id="donut-legend" class="donut-legend"></div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <h3>Palabras Clave Críticas</h3>
+          <ul id="top-keywords-list" class="keywords-analytics">
+            <!-- Se llenará vía JS -->
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="estadisticas" class="content-section hidden">
+      <h2 class="section-title">Minería e Historial de Auditoría</h2>
+      <div class="table-container history-scroll" style="max-height: 500px; overflow-y: auto;">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th style="position: sticky; top: 0; z-index: 10;">🕒 Fecha</th>
+              <th style="position: sticky; top: 0; z-index: 10;">💬 Comentario</th>
+              <th style="position: sticky; top: 0; z-index: 10;">📊 Sentimiento</th>
+              <th style="position: sticky; top: 0; z-index: 10;">🎯 Confianza</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+            <!-- Se llenará vía JS (Top 50 registros) -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="docs" class="content-section hidden">
+      <h2 class="section-title">Documentación Técnica e Interoperabilidad</h2>
+      <div class="dashboard-charts">
+        <div class="chart-container">
+          <h3>Frontend ↔ Backend (Java)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Comunicación vía REST con Spring Boot. Manejo de
+            estados de carga y persistencia en H2.</p>
+          <pre
+            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
+GET /api/stats?start=ISO&end=ISO
+POST /sentiment { "text": "..." }</pre>
+        </div>
+        <div class="chart-container">
+          <h3>Backend (Java) ↔ ML (Python)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Integración síncrona mediante Feign/RestTemplate.
+            El motor Python procesa la lógica híbrida.</p>
+          <pre
+            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
+POST /predict/sentiment
+Respuesta: { "prevision", "probabilidad", "top_features" }</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="recursos" class="content-section hidden">
+      <h2 class="section-title">Artefactos del Proyecto</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Datsets</span>
+          <span class="stat-label">Corpus G68</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Modelos</span>
+          <span class="stat-label">Bi-LSTM / Linear</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Notebooks</span>
+          <span class="stat-label">Jupyter Lab</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js?v=4"></script>
+</body>
+
+</html>
