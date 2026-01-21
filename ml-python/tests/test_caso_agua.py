@@ -25,7 +25,7 @@ if response.status_code == 200:
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
     print()
-
+    
     # Analizar n-gramas
     features = resultado['top_features'].split(' | ')
     print("🔍 N-gramas detectados:")

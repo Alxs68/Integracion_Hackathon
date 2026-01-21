@@ -28,7 +28,7 @@ if response.status_code == 200:
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
     print()
-
+    
     # Analizar n-gramas
     features = resultado['top_features'].split(' | ')
     print("🔍 N-gramas detectados:")
@@ -36,7 +36,7 @@ if response.status_code == 200:
         num_palabras = len(feat.split())
         tipo = "frase" if num_palabras >= 2 else "palabra"
         print(f"   {i}. '{feat}' ({tipo})")
-
+    
     print()
     # Validar resultado
     if resultado['prevision'] == 'Positivo':

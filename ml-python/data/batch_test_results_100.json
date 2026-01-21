@@ -1,0 +1,902 @@
+[
+  {
+    "ID": "1",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "¡Qué maravilla! El aire acondicionado hace tanto ruido que p...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "qué maravilla | ruido | aire acondicionado"
+  },
+  {
+    "ID": "2",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Las sábanas tenían manchas amarillas y el suelo del baño est...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "manchas"
+  },
+  {
+    "ID": "3",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Me cargaron 50 euros por un servicio que nunca pedí y no me ...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "nunca | factura | pedí"
+  },
+  {
+    "ID": "4",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No puedo decir que la comida no estuviera buena, pero el cam...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "buena"
+  },
+  {
+    "ID": "5",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "El hotel ofrece servicio de traslado al aeropuerto cada 30 m...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "aeropuerto | traslado | ofrece"
+  },
+  {
+    "ID": "6",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El recepcionista nos ignoró por estar hablando por su teléfo...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "ignoró"
+  },
+  {
+    "ID": "7",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La rapidez del check-in fue asombrosa, tardamos menos de dos...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5449,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "8",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Ironía",
+    "Reseña": "Gracias por el 'upgrade' a una habitación con vistas a un mu...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "vistas a un muro | ladrillos | gracias"
+  },
+  {
+    "ID": "9",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Grocero",
+    "Reseña": "Es una puta vergüenza que traten así a los clientes antiguos...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "puta vergüenza | que traten así"
+  },
+  {
+    "ID": "10",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El wifi es tan lento que no pude ni abrir el correo del trab...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "lento | wifi | abrir el correo"
+  },
+  {
+    "ID": "11",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El proceso de cancelación es un laberinto diseñado para que ...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "es un laberinto"
+  },
+  {
+    "ID": "12",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Había una cucaracha en el buffet de ensaladas, salimos corri...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "cucaracha"
+  },
+  {
+    "ID": "13",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Mixto",
+    "Reseña": "Me pidieron disculpas, pero el problema técnico sigue sin re...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "resolverse | problema | el problema"
+  },
+  {
+    "ID": "14",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Me duplicaron el cobro en la tarjeta y dicen que tardan 15 d...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.8201,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "15",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Engañoso",
+    "Reseña": "La foto de la web muestra una playa privada que en realidad ...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "sucia"
+  },
+  {
+    "ID": "16",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El colchón era tan cómodo que por fin pude descansar del via...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "cómodo | descansar"
+  },
+  {
+    "ID": "17",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No es que no me guste el hotel, pero le falta mucho mantenim...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.543,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "18",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Urgencia",
+    "Reseña": "¡Ayuda! Mi reserva desapareció del sistema y estoy en la pue...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "desapareció | ayuda mi reserva"
+  },
+  {
+    "ID": "19",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "La habitación cuenta con minibar, caja fuerte y secador de p...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "minibar | cuenta con"
+  },
+  {
+    "ID": "20",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Bravo, han logrado que unas vacaciones de relax sean un estr...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.6535,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "21",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El olor a tabaco en la habitación de no fumadores era insopo...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "insoportable | olor | el olor"
+  },
+  {
+    "ID": "22",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El botones nos ayudó con las maletas y fue extremadamente ed...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8542,
+    "Triggers": "extremadamente | ayudó | educado"
+  },
+  {
+    "ID": "23",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Dificil",
+    "Reseña": "Me dicen que el desayuno está incluido pero luego me cobran ...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "desayuno | el desayuno"
+  },
+  {
+    "ID": "24",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La campaña de redes sociales me convenció y el hotel cumplió...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8129,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "25",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "Para solicitar la factura es necesario enviar el RUT por cor...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "enviar | factura | solicitar"
+  },
+  {
+    "ID": "26",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El agua de la ducha sale templada, nunca llega a calentar de...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "nunca"
+  },
+  {
+    "ID": "27",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Gracias por hacerme esperar una hora en el lobby, me encanta...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "me encanta perder | gracias | esperar"
+  },
+  {
+    "ID": "28",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Encontramos moho en la junta de la ducha, falta mucha limpie...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "moho"
+  },
+  {
+    "ID": "29",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Intentaron cobrarme un extra por limpieza que no estaba en e...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.5036,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "30",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La insonorización es excelente, no se oye nada de la calle....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "excelente | es excelente"
+  },
+  {
+    "ID": "31",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "Vi el anuncio en Instagram y decidí reservar por la ubicació...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5834,
+    "Triggers": "reservar"
+  },
+  {
+    "ID": "32",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Grocero",
+    "Reseña": "El guardia de seguridad es un imbécil que no sabe tratar a l...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "imbécil"
+  },
+  {
+    "ID": "33",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No es imposible conseguir el reembolso, pero te lo ponen muy...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "imposible | difícil | es imposible"
+  },
+  {
+    "ID": "34",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El ascensor se quedó trabado entre pisos, pasamos mucho mied...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.6892,
+    "Triggers": "quedó"
+  },
+  {
+    "ID": "35",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Todo el hotel huele a limpio, se nota que cuidan los detalle...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "limpio"
+  },
+  {
+    "ID": "36",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "Pregunté por la clave del wifi y me la dieron en un papelito...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "wifi"
+  },
+  {
+    "ID": "37",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Me hicieron un cargo de 200 dólares que no sé de qué es....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5625,
+    "Triggers": "hicieron"
+  },
+  {
+    "ID": "38",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Vender este hostal como 'Luxury Resort' es tener mucha imagi...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "imaginación | hostal | vender"
+  },
+  {
+    "ID": "39",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "La luz de la habitación parpadea y el técnico nunca vino a v...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "nunca"
+  },
+  {
+    "ID": "40",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La chica de recepción, Marta, es lo mejor que tiene este hot...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "mejor | lo mejor | mejor que"
+  },
+  {
+    "ID": "41",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Había pelos en el desagüe cuando entramos a la habitación....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.8169,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "42",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Me enviaron la factura al minuto de pedírsela, muy eficiente...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "factura | enviaron"
+  },
+  {
+    "ID": "43",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "El parking está en el sótano y es gratuito para clientes....",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "parking | el parking"
+  },
+  {
+    "ID": "44",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Urgencia",
+    "Reseña": "Llamo y llamo a recepción y nadie contesta, necesito una man...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.8066,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "45",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Mixto",
+    "Reseña": "El precio es bueno, pero las comisiones por pago con tarjeta...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.7501,
+    "Triggers": "bueno | es bueno"
+  },
+  {
+    "ID": "46",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El 'kit de bienvenida' eran dos caramelos y una botella de a...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5,
+    "Triggers": "bienvenida | de bienvenida"
+  },
+  {
+    "ID": "47",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La Smart TV funciona genial y tiene Netflix configurado....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "genial"
+  },
+  {
+    "ID": "48",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Qué alivio que el recepcionista prefiera chatear que atender...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "alivio"
+  },
+  {
+    "ID": "49",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Había hormigas en la mesa de noche, no vuelvo jamás....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "no vuelvo | jamás | vuelvo"
+  },
+  {
+    "ID": "50",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No puedo negar que el check-out fue rápido, al menos eso....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "rápido"
+  },
+  {
+    "ID": "51",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El gimnasio está muy completo y las máquinas son nuevas....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8856,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "52",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "El folleto informativo está disponible en cinco idiomas....",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "disponible"
+  },
+  {
+    "ID": "53",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Me hablaron de forma muy condescendiente por no entender el ...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.6833,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "54",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Me retuvieron el depósito de garantía y ya pasaron 20 días....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.641,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "55",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "La piscina tiene demasiada arena en el fondo, parece descuid...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8367,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "56",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El balcón tiene unas vistas preciosas a la montaña....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.906,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "57",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La oferta de reserva anticipada nos ahorró mucho dinero....",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5094,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "58",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "El personal lleva uniforme y es fácil de identificar....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8228,
+    "Triggers": "fácil | fácil de | es fácil"
+  },
+  {
+    "ID": "59",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Me piden un código de confirmación que nunca me llegó al móv...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "nunca | móvil | que nunca"
+  },
+  {
+    "ID": "60",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Increíble que en 2026 el wifi solo funcione cerca del lobby....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "increíble | wifi"
+  },
+  {
+    "ID": "61",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "El vaso del cepillo de dientes tenía restos de pasta dental ...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "vieja"
+  },
+  {
+    "ID": "62",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Se dieron cuenta del error en el cobro y me llamaron para de...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "error"
+  },
+  {
+    "ID": "63",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El servicio de habitaciones se olvidó de mi cena dos veces....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.4679,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "64",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Si esto es un hotel de 4 estrellas, yo soy el Rey de España....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.4493,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "65",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "Las llaves son magnéticas y funcionan por aproximación....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.7786,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "66",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Nos recomendaron un tour privado que fue un acierto total....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "recomendaron | total | nos recomendaron"
+  },
+  {
+    "ID": "67",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "La alfombra del pasillo tiene manchas que parecen muy antigu...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "manchas"
+  },
+  {
+    "ID": "68",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Cambiaron los términos del servicio sin avisar a los suscrip...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.6038,
+    "Triggers": "cambiaron | avisar"
+  },
+  {
+    "ID": "69",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El minibar hace un ruido eléctrico constante y no deja dormi...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "ruido | minibar | un ruido"
+  },
+  {
+    "ID": "70",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Me encanta el nuevo logo y la estética moderna del hotel....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "encanta | me encanta"
+  },
+  {
+    "ID": "71",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No es que me hayan tratado mal, pero les falta calidez....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "mal | mal pero"
+  },
+  {
+    "ID": "72",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Me cobraron el parking cuando en la reserva decía que era gr...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "parking | cobraron"
+  },
+  {
+    "ID": "73",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La desinfección de las zonas comunes es constante, da seguri...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "comunes | zonas comunes"
+  },
+  {
+    "ID": "74",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "La presión del agua en el tercer piso es normal....",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "normal | es normal"
+  },
+  {
+    "ID": "75",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Grocero",
+    "Reseña": "El botones me pidió propina de forma muy agresiva y maleduca...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.8123,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "76",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El hotel se ve mucho más viejo y desgastado que en las fotos...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "viejo"
+  },
+  {
+    "ID": "77",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El proceso de reserva por la app fue fluido y sin errores....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "sin errores"
+  },
+  {
+    "ID": "78",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Me encanta que la ventana no cierre bien y entre todo el frí...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.65,
+    "Triggers": "encanta | frío | bien"
+  },
+  {
+    "ID": "79",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Me dijeron que me llamarían para confirmar y sigo esperando....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.65,
+    "Triggers": "esperando"
+  },
+  {
+    "ID": "80",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "Me cobraron una tarifa de cancelación por un error de su web...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "error | cobraron"
+  },
+  {
+    "ID": "81",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Había una mancha extraña en el sofá de la habitación....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "mancha"
+  },
+  {
+    "ID": "82",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Tienen cargadores para coches eléctricos, un gran punto a fa...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.7299,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "83",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "Recibí el boletín de ofertas en mi correo este lunes....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5155,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "84",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El personal de limpieza es súper discreto y eficiente....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.6929,
+    "Triggers": "eficiente"
+  },
+  {
+    "ID": "85",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Doble Negación",
+    "Reseña": "No es poco frecuente que el sistema de facturación falle....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "falle | facturación"
+  },
+  {
+    "ID": "86",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "El sensor de luz del pasillo tarda mucho en encenderse, está...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.5,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "87",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Gracias por cobrarme el agua del grifo a precio de champán....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "gracias | gracias por"
+  },
+  {
+    "ID": "88",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Crítico",
+    "Reseña": "El inodoro no estaba bien anclado y perdía agua, un asco....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.99,
+    "Triggers": "asco | bien | estaba bien"
+  },
+  {
+    "ID": "89",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "Gestionaron mi cambio de habitación sin ninguna objeción....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.6674,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "90",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Prometen 'desayuno continental' y solo hay tostadas y café m...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.65,
+    "Triggers": "malo | desayuno"
+  },
+  {
+    "ID": "91",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Neutro",
+    "Reseña": "El hotel tiene dos plantas y no dispone de jardín....",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "dispone | no dispone | dispone de"
+  },
+  {
+    "ID": "92",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Es frustrante que no contesten a los correos administrativos...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "frustrante"
+  },
+  {
+    "ID": "93",
+    "Categoria": "Cobros",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El desglose de la factura es clarísimo, nada de cargos ocult...",
+    "Prediccion": "Neutral",
+    "Probabilidad": 0.5,
+    "Triggers": "factura"
+  },
+  {
+    "ID": "94",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Sarcasmo",
+    "Reseña": "Bravo por el camarero que me trajo la cuenta antes de pedir ...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.5709,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "95",
+    "Categoria": "Higiene",
+    "Tipo_Esperado": "Negativo",
+    "Reseña": "Había polvo acumulado en las aspas del ventilador del techo....",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.6146,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "96",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "El sistema de domótica de la habitación es muy intuitivo....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.7635,
+    "Triggers": "análisis contextual"
+  },
+  {
+    "ID": "97",
+    "Categoria": "Atención",
+    "Tipo_Esperado": "Dificil",
+    "Reseña": "El personal es amable pero se nota que están desbordados de ...",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.6544,
+    "Triggers": "amable | es amable"
+  },
+  {
+    "ID": "98",
+    "Categoria": "Administrativo",
+    "Tipo_Esperado": "Urgencia",
+    "Reseña": "¡Cancelen mi reserva ya! Mi vuelo se canceló y no quiero car...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.85,
+    "Triggers": "vuelo se canceló | no quiero cargos"
+  },
+  {
+    "ID": "99",
+    "Categoria": "Marketing",
+    "Tipo_Esperado": "Positivo",
+    "Reseña": "La decoración navideña del hotel es preciosa y muy elegante....",
+    "Prediccion": "Positivo",
+    "Probabilidad": 0.85,
+    "Triggers": "preciosa | elegante | es preciosa"
+  },
+  {
+    "ID": "100",
+    "Categoria": "Operativo",
+    "Tipo_Esperado": "Mixto",
+    "Reseña": "Llegó el pedido de room service rápido, pero la comida estab...",
+    "Prediccion": "Negativo",
+    "Probabilidad": 0.65,
+    "Triggers": "rápido | fría | pedido"
+  }
+]

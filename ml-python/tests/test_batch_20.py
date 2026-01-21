@@ -41,7 +41,7 @@ for caso in casos:
             features = res['top_features']
             if len(features) > 30:
                 features = features[:27] + "..."
-
+            
             print(f"{caso['id']:<4} | {caso['tipo']:<22} | {res['prevision']:<10} | {res['probabilidad']:<6} | {features:<30}")
         else:
             print(f"{caso['id']:<4} | ERROR HTTP {response.status_code}")

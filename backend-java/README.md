@@ -1,37 +1,31 @@
-# Backend - Sentiment API (Spring boot)
+# Servidor Principal - Java Spring Boot
 
-## Estado actual
+Aquí vive la lógica central de nuestra aplicación G68. Este módulo se encarga de recibir las peticiones, hablar con el motor de IA y guardar los resultados.
 
-- Endopint '\sentiment' funcional (con mock)
-- Validacion de input
-- manejo de errores (400)
-- Preparado para integracion con servicio ML (Python)
+## 🛠️ ¿Qué usamos aquí?
 
-## Endopints
-```yaml
-POST: /sentiment
+- **Java 21**: Nuestro lenguaje base.
+- **Spring Boot 3.2**: Para crear la web API de forma fácil.
+- **Base de Datos H2**: Una base de datos ligera que vive en memoria (ideal para demos).
+- **OpenFeign**: Para conectarnos con el servicio de Python sin complicarnos.
+
+## ⚙️ Configuración
+
+Si necesitas cambiar el puerto o la dirección del modelo de IA, mira el archivo:
+`api/src/main/resources/application.properties`
+
+Por defecto está en el puerto `8000`.
+
+## ▶️ ¿Cómo lo inicio?
+
+Abre una terminal en esta carpeta y ejecuta:
+```bash
+cd api
+./mvnw spring-boot:run
 ```
-Recibe:
-```json
-{
-  "text" : "..."
-}
-```
 
-Devuelve:
-```json
-{
-  "prevision" : "Neutro",
-  "probabilidad" : "0.5"
-}
-```
-**Pendiente**
+## 🔌 Puntos de Conexión (Endpoints)
 
-- integracion con servicio ML (POST /predict/sentiment)
-- Manejo de error 503 cuando ML no este disponible
-
-**Puertos**
-
-- Backend: 8000
-- ML: 8080
-
+- `POST /sentiment`: Para enviar un texto y analizarlo.
+- `GET /api/stats`: Para ver las estadísticas del dashboard.
+- `GET /api/history`: Para ver el historial de análisis.

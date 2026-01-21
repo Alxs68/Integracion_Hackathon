@@ -15,7 +15,7 @@ casos = [
     {"id": 8, "cat": "Cobros (Pos)", "text": "Me aplicaron el descuento de fidelidad sin tener que solicitarlo, un gesto muy transparente."},
     {"id": 9, "cat": "Atención (Pos)", "text": "El equipo de seguridad actuó rápido cuando perdí mi cartera y la recuperaron en minutos."},
     {"id": 10, "cat": "Higiene (Pos)", "text": "El baño común brillaba y olía a desinfectante fresco cada vez que entraba, excelente trabajo."},
-
+    
     # --- NEUTROS (INFORMATIVOS) ---
     {"id": 11, "cat": "Higiene (Neu)", "text": "El hotel informa que las habitaciones se limpian diariamente entre las 10:00 y las 14:00 horas."},
     {"id": 12, "cat": "Cobros (Neu)", "text": "El depósito de seguridad se bloquea al hacer el check-in y se libera al finalizar la estancia."},
@@ -46,15 +46,15 @@ for caso in casos:
             features = res['top_features']
             if len(features) > 32:
                 features = features[:29] + "..."
-
+            
             print(f"{caso['id']:<4} | {caso['cat']:<15} | {res['prevision']:<10} | {res['probabilidad']:<6} | {features:<35}")
-
+            
             # Conteo de aciertos simulado (basado en etiquetas del ID)
             if caso['id'] <= 10 and res['prevision'] == 'Positivo':
                 positivos_ok += 1
-            elif (caso['id'] > 10 and
-                  (res['prevision'] == 'Neutral' or
-                   res['prevision'] == 'Neutro' or
+            elif (caso['id'] > 10 and 
+                  (res['prevision'] == 'Neutral' or 
+                   res['prevision'] == 'Neutro' or 
                    (res['prevision'] == 'Negativo' and res['probabilidad'] < 0.6))): # Tolerancia a negativo débil
                 # Nota: Neutro puro es difícil sin palabras clave forzadas, veremos qué sale
                 if res['prevision'] in ['Neutral', 'Neutro']:

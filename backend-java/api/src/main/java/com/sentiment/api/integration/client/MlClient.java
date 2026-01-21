@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-
-import java.util.Map;
-
 @Component
 public class MlClient {
     private final RestTemplate restTemplate;
@@ -25,7 +22,7 @@ public class MlClient {
         String baseUrl = env.getProperty("ml.base-url");
         String path = env.getProperty("ml.predict-path");
 
-        if (baseUrl == null || path == null){
+        if (baseUrl == null || path == null) {
             throw new MlServiceException("Configuración del servicio ML inválida");
         }
         String url = baseUrl + path;
@@ -35,12 +32,10 @@ public class MlClient {
             return restTemplate.postForObject(
                     url,
                     request,
-                    MlSentimentResponse.class
-            );
+                    MlSentimentResponse.class);
         } catch (ResourceAccessException ex) {
             throw new MlServiceException(
-                    "El servicio de ML no está disponible por el momento."
-            );
+                    "El servicio de ML no está disponible por el momento.");
         }
     }
 }

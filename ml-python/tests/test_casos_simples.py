@@ -21,7 +21,7 @@ CASOS_PRUEBA = [
     {"text": "lugar maravilloso", "esperado": "Positivo", "categoria": "Positivo Simple"},
     {"text": "vale la pena", "esperado": "Positivo", "categoria": "Positivo Simple"},
     {"text": "lo recomiendo totalmente", "esperado": "Positivo", "categoria": "Positivo Simple"},
-
+    
     # === NEGATIVOS CLAROS ===
     {"text": "hotel horrible", "esperado": "Negativo", "categoria": "Negativo Simple"},
     {"text": "pésimo servicio", "esperado": "Negativo", "categoria": "Negativo Simple"},
@@ -33,18 +33,18 @@ CASOS_PRUEBA = [
     {"text": "personal grosero", "esperado": "Negativo", "categoria": "Negativo Simple"},
     {"text": "decepcionante", "esperado": "Negativo", "categoria": "Negativo Simple"},
     {"text": "no lo recomiendo", "esperado": "Negativo", "categoria": "Negativo Simple"},
-
+    
     # === NEUTROS CLAROS ===
     {"text": "normal", "esperado": "Neutro", "categoria": "Neutro Simple"},
     {"text": "ni bien ni mal", "esperado": "Neutro", "categoria": "Neutro Simple"},
     {"text": "está bien", "esperado": "Neutro", "categoria": "Neutro Simple"},
     {"text": "aceptable", "esperado": "Neutro", "categoria": "Neutro Simple"},
-
+    
     # === CASOS COMPLEJOS (Sarcasmo/Contraste) ===
     {"text": "excelente hotel, pero sucio", "esperado": "Negativo", "categoria": "Contraste"},
     {"text": "buena ubicación pero caro", "esperado": "Neutro", "categoria": "Contraste"},
     {"text": "limpio pero ruidoso", "esperado": "Neutro", "categoria": "Contraste"},
-
+    
     # === CASOS CRÍTICOS ===
     {"text": "encontré cucarachas", "esperado": "Negativo", "categoria": "Crítico"},
     {"text": "me robaron", "esperado": "Negativo", "categoria": "Crítico"},
@@ -59,11 +59,11 @@ def probar_caso(caso, index):
             resultado = response.json()
             prevision = resultado.get("prevision", "").replace("[+] ", "").replace("[-] ", "")
             probabilidad = resultado.get("probabilidad", 0.0)
-
+            
             # Validar si cumple expectativa
             cumple = prevision == caso["esperado"]
             emoji = "✅" if cumple else "❌"
-
+            
             return {
                 "index": index + 1,
                 "texto": caso["text"],
@@ -96,14 +96,14 @@ def main():
     print("🧪 DIAGNÓSTICO DE CASOS SIMPLES - G68 Sentiment API")
     print("=" * 80)
     print(f"\n📊 Total de casos a probar: {len(CASOS_PRUEBA)}\n")
-
+    
     resultados = []
-
+    
     # Ejecutar pruebas
     for i, caso in enumerate(CASOS_PRUEBA):
         resultado = probar_caso(caso, i)
         resultados.append(resultado)
-
+        
         # Mostrar resultado en tiempo real
         if "error" in resultado:
             print(f"{resultado['emoji']} [{resultado['index']:02d}] ERROR: {resultado.get('error')}")
@@ -111,20 +111,20 @@ def main():
             print(f"{resultado['emoji']} [{resultado['index']:02d}] '{resultado['texto'][:40]:40s}' | "
                   f"Esperado: {resultado['esperado']:8s} | "
                   f"Obtenido: {resultado['obtenido']:8s} ({resultado['probabilidad']:.2f})")
-
+    
     # === RESUMEN ESTADÍSTICO ===
     print("\n" + "=" * 80)
     print("📈 RESUMEN DE RESULTADOS")
     print("=" * 80)
-
+    
     total = len(resultados)
     exitosos = sum(1 for r in resultados if r.get("cumple", False))
     fallidos = total - exitosos
     tasa_exito = (exitosos / total * 100) if total > 0 else 0
-
+    
     print(f"\n✅ Casos Exitosos: {exitosos}/{total} ({tasa_exito:.1f}%)")
     print(f"❌ Casos Fallidos:  {fallidos}/{total} ({100-tasa_exito:.1f}%)")
-
+    
     # Desglose por categoría
     print("\n📊 Desglose por Categoría:")
     categorias = {}
@@ -135,18 +135,18 @@ def main():
         categorias[cat]["total"] += 1
         if r.get("cumple", False):
             categorias[cat]["exitosos"] += 1
-
+    
     for cat, stats in sorted(categorias.items()):
         tasa = (stats["exitosos"] / stats["total"] * 100) if stats["total"] > 0 else 0
         print(f"  • {cat:20s}: {stats['exitosos']}/{stats['total']} ({tasa:.0f}%)")
-
+    
     # === ANÁLISIS DE FALLOS ===
     print("\n" + "=" * 80)
     print("🔍 ANÁLISIS DE CASOS FALLIDOS")
     print("=" * 80)
-
+    
     fallos = [r for r in resultados if not r.get("cumple", False)]
-
+    
     if not fallos:
         print("\n🎉 ¡No hay fallos! Todos los casos pasaron correctamente.")
     else:
@@ -160,25 +160,25 @@ def main():
                 print(f"    Esperado: {fallo['esperado']} | Obtenido: {fallo['obtenido']} ({fallo['probabilidad']:.2f})")
                 print(f"    Categoría: {fallo['categoria']}")
             print()
-
+    
     # === PALABRAS POTENCIALMENTE FALTANTES ===
     print("=" * 80)
     print("💡 PALABRAS CLAVE DETECTADAS EN CASOS FALLIDOS")
     print("=" * 80)
-
+    
     palabras_en_fallos = set()
     for fallo in fallos:
         if "error" not in fallo:
             # Extraer palabras significativas (más de 3 letras)
             palabras = [p.strip().lower() for p in fallo['texto'].split() if len(p.strip()) > 3]
             palabras_en_fallos.update(palabras)
-
+    
     if palabras_en_fallos:
         print("\nPalabras que podrían necesitar agregarse al diccionario:")
         print(", ".join(sorted(palabras_en_fallos)))
     else:
         print("\nNo se detectaron palabras faltantes obvias.")
-
+    
     print("\n" + "=" * 80)
     print("✨ Diagnóstico completado")
     print("=" * 80)

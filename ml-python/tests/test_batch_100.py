@@ -121,24 +121,24 @@ for caso in casos:
             res = response.json()
             features = res['top_features']
             if len(features) > 37: features = features[:34] + "..."
-
+            
             label_esperada = "UNK"
             if caso['tipo'] in ['Positivo']: label_esperada = "Positivo"
             elif caso['tipo'] in ['Negativo', 'Crítico', 'Grocero', 'Urgencia', 'Engañoso']: label_esperada = "Negativo"
             elif caso['tipo'] in ['Neutro']: label_esperada = "Neutral"
             # Sarcasmo e Ironía se esperan Negativos
             elif caso['tipo'] in ['Sarcasmo', 'Ironía']: label_esperada = "Negativo"
-
+            
             # Simple check de aciertos
             correct = False
             if label_esperada != "UNK":
                 if (label_esperada == "Neutral" and res['prevision'] in ["Neutral", "Neutro"]): correct = True
                 elif res['prevision'] == label_esperada: correct = True
-
+            
             if correct: aciertos += 1
-
+            
             mark = "CORRECTO" if correct else "ERROR" if label_esperada != "UNK" else "?"
-
+            
             print(f"{caso['id']:<4} | {caso['cat']:<10} | {caso['tipo']:<10} | {res['prevision']:<10} | {res['probabilidad']:<6} | {features:<40} | {mark}")
 
         else:

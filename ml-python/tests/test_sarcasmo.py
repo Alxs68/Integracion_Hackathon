@@ -28,7 +28,7 @@ if response.status_code == 200:
     print(f"   • Prevision: {resultado['prevision']}")
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
-
+    
     # Validar resultado
     if resultado['prevision'] == 'Negativo':
         print("\n🎉 INCREÍBLE: El sistema detectó el sarcasmo!")

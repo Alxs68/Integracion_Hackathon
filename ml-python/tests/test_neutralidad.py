@@ -28,7 +28,7 @@ if response.status_code == 200:
     print(f"   • Prevision: {resultado['prevision']}")
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
-
+    
     # Validar resultado
     pred = resultado['prevision'].lower()
     if 'neutr' in pred: # Neutral o Neutro

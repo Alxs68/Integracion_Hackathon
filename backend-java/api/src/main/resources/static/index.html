@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sentimental IA – Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      H12-25-L-Equipo 68
+    </div>
+
+    <nav class="topbar-center">
+      <ul class="nav-links">
+        <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+        <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+        <li><a href="#estadisticas" class="nav-link">Estadísticas</a></li>
+        <li><a href="#distribucion" class="nav-link">Distribución</a></li>
+        <li><a href="#docs" class="nav-link">Docs</a></li>
+      </ul>
+    </nav>
+
+    <div class="topbar-right">
+      <button id="theme-toggle" class="btn-theme-toggle" aria-label="Cambiar tema">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+      <button type="button" class="btn-login">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- Hero inicial (se oculta después del primer envío válido) -->
+    <section class="hero">
+      <h1 class="branding-title">Sentimental IA</h1>
+      <h2 class="branding-subtitle">Análisis inteligente de comentarios</h2>
+    </section>
+
+    <section class="conversation" id="inicio">
+
+      <!-- Contenedor Principal de Interacción (Centrado) -->
+      <div class="main-interaction-container">
+
+        <!-- Lado Izquierdo: Botón Batch -->
+        <div class="batch-side-col">
+          <button id="btnImportCSV" class="btn-import-batch" title="Procesar Lote CSV">
+            <i class="fas fa-file-csv"></i> Procesar Lote CSV
+          </button>
+          <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+        </div>
+
+        <!-- Lado Derecho: Columna de Input y Selector -->
+        <div class="input-side-col">
+          <!-- Selector (Label arriba izquierda) -->
+          <div class="api-selector-inline">
+            <label for="apiSelect">Modelo activo:</label>
+            <select id="apiSelect">
+              <option value="DEV_BACKEND">Sistema Híbrido G68 (Local)</option>
+              <option value="MODEL_LINEAR">Modelo Linear (Temporal)</option>
+              <option value="MODEL_BILSTM">Modelo Bi-LSTM OCI</option>
+            </select>
+          </div>
+
+          <!-- Caja de Texto -->
+          <div class="input-wrapper">
+            <textarea id="textInput" class="search-input" placeholder="Haz tu comentario..." rows="3" spellcheck="true"
+              autocomplete="off"></textarea>
+
+            <!-- Icono (+) adjuntar -->
+            <button type="button" id="attachButton" class="input-action input-attach" aria-label="Adjuntar archivo">
+              +
+            </button>
+
+            <!-- Selector de idioma ES/PT -->
+            <select id="langSelect" class="input-action input-lang" aria-label="Seleccionar idioma">
+              <option value="es">ES</option>
+              <option value="pt">PT</option>
+            </select>
+
+            <!-- Botón limpiar (X) -->
+            <button type="button" id="clearButton" class="input-action input-clear hidden" aria-label="Limpiar texto">
+              ×
+            </button>
+
+            <!-- Botón enviar (flecha ↑) -->
+            <button type="button" id="sendButton" class="input-action input-send hidden"
+              aria-label="Analizar sentimiento">
+              ↑
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultados aparecen DEBAJO del input -->
+      <div id="history" class="history"></div>
+    </section>
+
+    <!-- Sección Dashboard: Resumen y Estadísticas rápidas -->
+    <section id="dashboard" class="content-section hidden">
+      <div class="section-header-row">
+        <h2 class="section-title">Análisis de Sentimiento (Dashboard)</h2>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Total Análisis</span>
+        </div>
+        <div class="stat-card positive">
+          <span class="stat-value" id="stat-pos">0</span>
+          <span class="stat-label">Positivos</span>
+        </div>
+        <div class="stat-card neutral">
+          <span class="stat-value" id="stat-neu">0</span>
+          <span class="stat-label">Neutros</span>
+        </div>
+        <div class="stat-card negative">
+          <span class="stat-value" id="stat-neg">0</span>
+          <span class="stat-label">Negativos</span>
+        </div>
+      </div>
+
+      <div class="dashboard-charts"
+        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem;">
+        <div class="chart-container glass" style="height: 350px;">
+          <h3 style="text-align: center;">🟢 Top 10 Positivas</h3>
+          <div style="height: 280px; width: 100%; position: relative;">
+            <canvas id="posGlobalChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container glass" style="height: 350px;">
+          <h3 style="text-align: center;">🟠 Top 10 Negativas</h3>
+          <div style="height: 280px; width: 100%; position: relative;">
+            <canvas id="negGlobalChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container glass" style="height: 350px;">
+          <h3 style="text-align: center;">🚨 Top 7 Críticos (Global)</h3>
+          <div style="height: 280px; width: 100%; position: relative;">
+            <canvas id="critGlobalChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container glass"
+          style="width: 100%; grid-column: span 3; max-width: 600px; margin: 0 auto; min-height: 300px;">
+          <h3 style="text-align: center;">Distribución General de Sentimientos</h3>
+          <div class="donut-display">
+            <div id="sentiment-donut" class="donut-chart"></div>
+            <div id="donut-legend" class="donut-legend"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="estadisticas" class="content-section hidden">
+      <h2 class="section-title">Minería e Historial de Auditoría</h2>
+
+      <!-- Gráficos Superiores: N-grams y Alertas -->
+      <div class="dashboard-charts advanced-stats-grid"
+        style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+        <div class="chart-container glass"
+          style="height: 280px; padding: 1rem; overflow: hidden; display: flex; flex-direction: column;">
+          <h3 style="font-size: 0.85rem; margin-bottom: 0.8rem; text-align: center;">Frases Positivas (Audit)</h3>
+          <div style="height: 200px; width: 100%; position: relative;">
+            <canvas id="posAuditChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container glass"
+          style="height: 280px; padding: 1rem; overflow: hidden; display: flex; flex-direction: column;">
+          <h3 style="font-size: 0.85rem; margin-bottom: 0.8rem; text-align: center;">Frases Negativas (Audit)</h3>
+          <div style="height: 200px; width: 100%; position: relative;">
+            <canvas id="negAuditChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container glass"
+          style="height: 280px; padding: 1rem; overflow: hidden; display: flex; flex-direction: column;">
+          <h3 style="font-size: 0.85rem; margin-bottom: 0.8rem; text-align: center;">Ranking Crítico (Top 5)</h3>
+          <div style="height: 200px; width: 100%; position: relative;">
+            <canvas id="criticalCasesChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination-controls"
+        style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; margin-bottom: 0.5rem;">
+        <button id="prevPage" class="action-btn glass" style="padding: 0.5rem 1rem;">← Anterior</button>
+        <span id="currentPageLabel" style="color: var(--text-secondary); align-self: center;">Página 1</span>
+        <button id="nextPage" class="action-btn glass" style="padding: 0.5rem 1rem;">Siguiente →</button>
+      </div>
+
+      <!-- Historial Inferior (Limitado a 5 registros) -->
+      <div class="table-container history-scroll" style="margin-top: 0.5rem;">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th style="position: sticky; top: 0; z-index: 10;">🕒 Fecha</th>
+              <th style="position: sticky; top: 0; z-index: 10;">💬 Comentario</th>
+              <th style="position: sticky; top: 0; z-index: 10;">📊 Sentimiento</th>
+              <th style="position: sticky; top: 0; z-index: 10;">🎯 Confianza</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+            <!-- Cargado por JS (Top 5) -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Sección Distribución de Probabilidades -->
+    <section id="distribucion" class="content-section hidden">
+      <div class="section-header-row">
+        <h2 class="section-title">Distribución de Probabilidades (Boxplot)</h2>
+      </div>
+      <div class="chart-container glass" style="height: 400px; padding: 2rem; position: relative;">
+        <canvas id="probabilityBoxPlot"></canvas>
+      </div>
+    </section>
+
+
+    <section id="docs" class="content-section hidden">
+      <h2 class="section-title">Documentación Técnica G68</h2>
+      <div class="dashboard-charts" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+
+        <!-- Motor Híbrido y Probabilidades -->
+        <div class="chart-container glass" style="height: auto; padding: 1.5rem; grid-column: span 2;">
+          <h3>🔬 Funcionamiento del Motor Híbrido G68</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+            El motor de análisis de sentimiento G68 utiliza un enfoque <strong>híbrido de dos capas</strong> para
+            maximizar la precisión:
+          </p>
+          <ul
+            style="color: var(--text-secondary); font-size: 0.85rem; margin-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.8;">
+            <li><strong>Capa 1 (Estadística):</strong> Un modelo Bi-LSTM procesa la estructura gramatical y el contexto
+              global.</li>
+            <li><strong>Capa 2 (Veto Semántico):</strong> Un sistema de reglas que busca términos críticos. Si se
+              detectan, el motor aplica un "Veto de Negatividad", forzando valores de confianza específicos.</li>
+          </ul>
+
+          <h4>🎯 Origen de las Probabilidades (Confianza)</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.5rem;">
+            Los valores de confianza dependen de qué capa tome la decisión final en el motor G68:
+          </p>
+          <ul style="color: var(--text-secondary); font-size: 0.8rem; margin-left: 1.5rem; line-height: 1.6;">
+            <li><strong>99% (Capa Semántica):</strong> Casos de alta prioridad detectados por el sistema de Veto
+              (Higiene, Estafa, Seguridad).</li>
+            <li><strong>85% (Capa Semántica):</strong> Reemplazo de sentimiento decidido por heurística sobre la
+              predicción del modelo.</li>
+            <li><strong>50% (Capa Semántica):</strong> Forzado de neutralidad cuando el texto es ambiguo o carece de
+              carga sentimental clara.</li>
+            <li><strong>Valores Dinámicos:</strong> Si no interviene la capa semántica, se muestra la probabilidad
+              original del modelo <strong>Bi-LSTM</strong> (ej. 76.4%, 58.2%), lo que indica el grado de certeza
+              estadística puro.</li>
+          </ul>
+        </div>
+
+        <!-- Contratos de Integración -->
+        <div class="chart-container glass" style="height: auto; padding: 1rem;">
+          <h3 style="font-size: 0.9rem;">Integración FE ↔ BE</h3>
+          <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            Comunicación REST con Spring Boot y <strong>persistencia persistente en H2 (basada en archivos)</strong>
+            para evitar la volatilidad de los datos.
+          </p>
+          <pre
+            style="font-size: 0.7rem; color: #fff; margin: 0; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px;">
+GET /api/stats
+POST /sentiment { "text": "..." }</pre>
+        </div>
+
+        <div class="chart-container glass" style="height: auto; padding: 1rem;">
+          <h3 style="font-size: 0.9rem;">Integración BE ↔ ML</h3>
+          <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Consumo del motor Python
+            mediante Feign Client.</p>
+          <pre
+            style="font-size: 0.7rem; color: #fff; margin: 0; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px;">
+POST /predict/sentiment
+{ "prevision", "probabilidad", "top_features" }</pre>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js?v=23"></script>
+</body>
+
+</html>

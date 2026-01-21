@@ -18,15 +18,15 @@ response = requests.post(API_URL, json=caso)
 
 if response.status_code == 200:
     resultado = response.json()
-
+    
     print("📦 RESPUESTA COMPLETA DEL API:")
     print(json.dumps(resultado, indent=2, ensure_ascii=False))
     print()
-
+    
     print("📊 CAMPOS DISPONIBLES:")
     for key in resultado.keys():
         print(f"   • {key}: {type(resultado[key]).__name__}")
-
+    
     print()
     if 'explicabilidad' in resultado:
         print("✅ El campo 'explicabilidad' ESTÁ disponible")

@@ -28,7 +28,7 @@ if response.status_code == 200:
     print(f"   • Prevision: {resultado['prevision']}")
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
-
+    
     if resultado['prevision'] == 'Positivo':
         print("\n✅ CORRECTO: Clasificado como Positivo")
     else:

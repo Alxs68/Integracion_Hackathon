@@ -26,7 +26,7 @@ if response.status_code == 200:
     print(f"   • Probabilidad: {resultado['probabilidad']}")
     print(f"   • Top Features: {resultado['top_features']}")
     print()
-
+    
     # Verificar mejora
     features = resultado['top_features'].split(' | ')
     print("🔍 N-gramas detectados:")
@@ -34,7 +34,7 @@ if response.status_code == 200:
         num_palabras = len(feat.split())
         tipo = "frase" if num_palabras >= 2 else "palabra"
         print(f"   {i}. '{feat}' ({tipo}, {num_palabras} palabra{'s' if num_palabras > 1 else ''})")
-
+    
     print()
     if any(len(f.split()) >= 2 for f in features):
         print("✅ MEJORA CONFIRMADA: Se detectaron frases contextuales (2+ palabras)")
