@@ -1,0 +1,12 @@
+diff --git a/backend-java/api/src/main/resources/application-prod.properties b/backend-java/api/src/main/resources/application-prod.properties
+new file mode 100644
+index 0000000..e1284e6
+--- /dev/null
++++ b/backend-java/api/src/main/resources/application-prod.properties
+@@ -0,0 +1,5 @@
++# Configuración optimizada para Producción (Fase 2)
++server.compression.enabled=true
++server.compression.mime-types=application/json,text/html,text/xml,text/plain
++logging.level.root=WARN
++ml.timeout.ms=2000
+\ No newline at end of file

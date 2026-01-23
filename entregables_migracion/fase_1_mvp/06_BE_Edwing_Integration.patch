@@ -1,0 +1,12 @@
+diff --git a/backend-java/api/src/main/resources/application.properties b/backend-java/api/src/main/resources/application.properties
+new file mode 100644
+index 0000000..e1284e6
+--- /dev/null
++++ b/backend-java/api/src/main/resources/application.properties
+@@ -0,0 +1,5 @@
++server.port=8080
++
++# Configuración de Conexión con Motor Python
++ml.base-url=http://localhost:8000
++ml.predict-path=/predict/sentiment
+\ No newline at end of file

@@ -1,0 +1,10 @@
+diff --git a/universal_batch_processor.py b/universal_batch_processor.py
+new file mode 100644
+index 0000000..e1284e6
+--- /dev/null
++++ b/universal_batch_processor.py
+@@ -0,0 +1,5 @@
++# Herramienta Universal de Procesamiento Batch (v1.0)
++import pandas as pd
++# ... (Contenido del script)
+\ No newline at end of file

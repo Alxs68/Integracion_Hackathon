@@ -1,0 +1,11 @@
+diff --git a/frontend/css/animations-advanced.css b/frontend/css/animations-advanced.css
+new file mode 100644
+index 0000000..e1284e6
+--- /dev/null
++++ b/frontend/css/animations-advanced.css
+@@ -0,0 +1,5 @@
++/* Animaciones Complejas (Fase 2b) */
++.bounce-in {
++    animation: bounce 1s;
++}
++@keyframes bounce { 0% { transform: scale(0); } 100% { transform: scale(1); } }

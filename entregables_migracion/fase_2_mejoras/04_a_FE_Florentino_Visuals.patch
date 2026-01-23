@@ -1,0 +1,17 @@
+diff --git a/frontend/css/animations-v2.css b/frontend/css/animations-v2.css
+new file mode 100644
+index 0000000..e1284e6
+--- /dev/null
++++ b/frontend/css/animations-v2.css
+@@ -0,0 +1,10 @@
++/* Mejoras visuales Fase 2 */
++.fade-in-pro {
++    animation: fadeIn 0.8s ease-in-out;
++}
++
++@keyframes fadeIn {
++    0% { opacity: 0; transform: translateY(10px); }
++    100% { opacity: 1; transform: translateY(0); }
++}
++.high-contrast { filter: contrast(1.2); }
+\ No newline at end of file
