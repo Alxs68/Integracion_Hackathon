@@ -357,27 +357,63 @@ function analyze() {
         }
       `;
 
-      // Inject Like/Dislike logic now that we have data
+      // Inject Like/Dislike logic
       const id = data.id;
       if (id) {
+        // Container for buttons
+        const feedbackContainer = document.createElement("div");
+        feedbackContainer.className = "feedback-actions";
+        feedbackContainer.style.marginTop = "1rem";
+        feedbackContainer.style.display = "flex";
+        feedbackContainer.style.gap = "10px";
+
         const btnLike = document.createElement("button");
-        btnLike.className = "action-btn";
+        btnLike.className = "action-btn feedback-btn";
+        btnLike.setAttribute("data-type", "LIKE"); // Critical for CSS coloring
         btnLike.innerHTML = '<span class="action-icon-circle">👍</span>';
-        btnLike.onclick = () => fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=LIKE`, { method: "POST" }).then(() => alert("Gracias!"));
+        btnLike.title = "Me gusta";
 
         const btnDislike = document.createElement("button");
-        btnDislike.className = "action-btn";
+        btnDislike.className = "action-btn feedback-btn";
+        btnDislike.setAttribute("data-type", "DISLIKE"); // Critical for CSS coloring
         btnDislike.innerHTML = '<span class="action-icon-circle">👎</span>';
-        btnDislike.onclick = () => fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=DISLIKE`, { method: "POST" }).then(() => alert("Gracias por el feedback"));
+        btnDislike.title = "No me gusta";
 
-        // This selector is risky. Better to use the 'actionsDiv' variable from closure since this is all inside one function 'analyze'.
-        // 'actionsDiv' is available here!
-        actionsDiv.appendChild(btnLike);
-        actionsDiv.appendChild(btnDislike); // Restaurado "No me Gusta"
+        // Click Handlers with Visual Toggle
+        const handleFeedback = (type, btnClicked, btnOther) => {
+          // Force removal of active from both first to clear state
+          btnClicked.classList.remove("active");
+          btnOther.classList.remove("active");
 
-        // Update Global Stats immediately AND History
+          // Add active to clicked
+          btnClicked.classList.add("active");
+
+          fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=${type}`, { method: "POST" })
+            .then(res => {
+              if (res.ok) {
+                console.log("Feedback saved");
+                // Delay updates slightly to allow visual feedback to land
+                setTimeout(() => {
+                  fetchStats();
+                  fetchHistory(0);
+                }, 200);
+              }
+            })
+            .catch(e => console.error(e));
+        };
+
+        btnLike.onclick = () => handleFeedback("LIKE", btnLike, btnDislike);
+        btnDislike.onclick = () => handleFeedback("DISLIKE", btnDislike, btnLike);
+
+        feedbackContainer.appendChild(btnLike);
+        feedbackContainer.appendChild(btnDislike);
+
+        actionsDiv.appendChild(feedbackContainer);
+
+        // Update stats
         fetchStats();
-        fetchHistory(0); // Restaurado Auditoria en tiempo real
+        // Do NOT call fetchHistory(0) here immediately to avoid jumping scroll if user is reading. 
+        // Let them scroll manually or let the feedback trigger it.
       }
     })
     .catch((error) => {

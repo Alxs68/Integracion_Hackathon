@@ -1286,3 +1286,96 @@ body.theme-dark .history-table th {
   font-size: 0.85rem;
   padding: 0.6rem;
 }
+
+/* =========================================
+   Visual Feedback States (Like/Dislike)
+   ========================================= */
+
+/* Base state for feedback buttons */
+.feedback-btn {
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.feedback-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Active State (Selected) - GENERIC */
+.feedback-btn.active {
+  opacity: 1;
+  transform: scale(1.15);
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+/* Specific colors */
+/* LIKE (Success/Green/Blue) */
+button[title="Me gusta"].active .action-icon-circle,
+.feedback-btn.active[data-type="LIKE"] .action-icon-circle {
+  background-color: var(--success) !important;
+  border-color: var(--success) !important;
+  color: white !important;
+  box-shadow: 0 0 15px var(--success);
+}
+
+/* DISLIKE (Danger/Red) */
+button[title="No me gusta"].active .action-icon-circle,
+.feedback-btn.active[data-type="DISLIKE"] .action-icon-circle {
+  background-color: var(--danger) !important;
+  border-color: var(--danger) !important;
+  color: white !important;
+  box-shadow: 0 0 15px var(--danger);
+}
+
+/* =========================================
+   Visual Feedback States (Like/Dislike)
+   ========================================= */
+
+/* Base state for feedback buttons */
+.feedback-btn {
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.feedback-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Active State (Selected) */
+.feedback-btn.active {
+  opacity: 1;
+  transform: scale(1.15);
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  /* Ensure circle shape background if needed */
+}
+
+/* Specific colors based on context or generic active */
+.feedback-btn.active .action-icon-circle {
+  border-color: currentColor;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Constructing specific selectors if data-type is present on button or parent */
+button[title="Me gusta"].active .action-icon-circle,
+.feedback-btn.active[data-type="LIKE"] .action-icon-circle {
+  background-color: var(--success);
+  /* Green/Blue */
+  border-color: var(--success);
+  color: white;
+  box-shadow: 0 0 15px var(--success);
+}
+
+button[title="No me gusta"].active .action-icon-circle,
+.feedback-btn.active[data-type="DISLIKE"] .action-icon-circle {
+  background-color: var(--danger);
+  /* Red */
+  border-color: var(--danger);
+  color: white;
+  box-shadow: 0 0 15px var(--danger);
+}

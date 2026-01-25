@@ -11,6 +11,14 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Sentiment Analysis Logic Service
+ * 
+ * Traceability & Authorship:
+ * - Database Architecture: Lorena (G68)
+ * - API Integration: Lorena (G68)
+ * - Advanced Logic Refactor: Antigravity Agent
+ */
 @Service
 public class SentimentService {
     private final SentimentAnalysisRepository repository;
