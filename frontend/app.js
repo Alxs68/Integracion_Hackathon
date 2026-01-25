@@ -793,28 +793,60 @@ function setupBatchProcessing() {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const csvText = event.target.result;
-      const lines = csvText.split(/\r?\n/);
-      if (lines.length < 2) return;
+      const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length < 2) {
+        alert("El archivo CSV parece vacío o no tiene encabezados.");
+        return;
+      }
 
-      const header = lines[0].split(",");
-      // Buscar columna "Reseña" o similar
-      let colIndex = header.findIndex(h => /reseña|text|review/i.test(h.trim().replace(/"/g, "")));
-      if (colIndex === -1) colIndex = header.length - 1; // Fallback a la última columna
+      // 1. Detect delimiter (comma or semicolon)
+      const firstLine = lines[0];
+      const semicolonCount = (firstLine.match(/;/g) || []).length;
+      const commaCount = (firstLine.match(/,/g) || []).length;
+      const separator = semicolonCount > commaCount ? ";" : ",";
+
+      // 2. Parse Headers
+      // Simple split for headers, stripping quotes
+      const header = firstLine.split(separator).map(h => h.trim().replace(/^"|"$/g, ''));
+
+      // 3. Find target column
+      // Priorities: 'reseña', 'text', 'review', 'comentario', 'content'
+      let colIndex = header.findIndex(h => /reseña|text|review|comentario|content/i.test(h));
+
+      // Fallback: If no match, use the first column that looks long enough or just index 0
+      if (colIndex === -1) colIndex = 0;
+
+      console.log(`[Batch] Delimiter: '${separator}', Target Column Index: ${colIndex} (${header[colIndex]})`);
 
       btn.disabled = true;
       btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Procesando...`;
 
       // Redirigir al dashboard para ver el progreso real
-      const dashLink = document.querySelector('a[href="#dashboard"]');
+      const dashLink = document.querySelector('a[data-target="dashboard"]');
       if (dashLink) dashLink.click();
 
       let processed = 0;
+      // Regex for splitting while respecting quotes for the specific separator
+      // Note: This regex is tricky for dynamic separators. We will use a simpler approach for stability:
+      // If it's semicolon, we split by semicolon (assuming no semicolons in text or simple replacement).
+      // For a Hackathon/Demo, simple split is often safer unless complex CSVs are used.
+
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i];
-        if (!line.trim()) continue;
 
-        const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        const text = (parts[colIndex] || "").replace(/"/g, "").trim();
+        let text = "";
+
+        if (separator === ";") {
+          const parts = line.split(";");
+          text = parts[colIndex] || "";
+        } else {
+          // Comma logic with quote handling
+          const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+          text = parts[colIndex] || "";
+        }
+
+        // Clean quotes
+        text = text.replace(/^"|"$/g, '').trim();
 
         if (text.length >= 3) {
           try {
@@ -824,12 +856,15 @@ function setupBatchProcessing() {
               body: JSON.stringify({ text: text })
             });
             processed++;
-            if (processed % 5 === 0) {
+
+            // Visual feedback every 1 row for "speed" feel in demo
+            if (processed % 1 === 0) {
               btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> (${processed})...`;
-              fetchStats();
+              // Updating stats every row might be too heavy, maybe every 3
+              if (processed % 3 === 0) fetchStats();
             }
           } catch (err) {
-            console.error("Error en batch:", err);
+            console.error("Error en batch row:", err);
           }
         }
       }
