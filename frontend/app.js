@@ -534,10 +534,8 @@ function setupNavigation() {
 
   navLinks.forEach(link => {
     link.addEventListener("click", (e) => {
-      const targetId = link.getAttribute("href").substring(1);
-
-      // No prevenir default para que el hash cambie, pero manejar visibilidad
-      // e.preventDefault(); 
+      e.preventDefault(); // Prevent hash change
+      const targetId = link.getAttribute("data-target");
 
       // Actualizar links activos
       navLinks.forEach(l => l.classList.remove("active"));
@@ -866,6 +864,7 @@ function setupVoiceInput() {
   const recognition = new SpeechRecognition();
   recognition.lang = "es-ES";
   recognition.interimResults = false;
+  recognition.continuous = false; // Ensure it stops after one sentence
   recognition.maxAlternatives = 1;
 
   let isRecording = false;
@@ -880,7 +879,7 @@ function setupVoiceInput() {
 
   recognition.onstart = () => {
     isRecording = true;
-    micBtn.classList.add("recording"); // Necesita CSS para pulsar en rojo
+    micBtn.classList.add("recording");
     micBtn.innerHTML = "🔴";
   };
 
@@ -891,8 +890,11 @@ function setupVoiceInput() {
   };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (transcript) {
+    // Prevent duplication by checking isFinal if available, though interim=false should handle it.
+    // Some browsers might be tricky, so we rely on the first absolute result.
+    const result = event.results[0];
+    if (result.isFinal) {
+      const transcript = result[0].transcript;
       const current = textarea.value ? textarea.value + " " : "";
       textarea.value = current + transcript;
       autoResize(textarea);
