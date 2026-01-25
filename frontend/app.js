@@ -3,8 +3,17 @@
 // =====================
 
 // URL de la API en entorno remoto / dev
+/**
+ * Sentimental IA - Frontend Logic
+ * Autores Originales:
+ * - Frontend Architecture: Florentino (G68)
+ * - Database Integration: Lorena (G68)
+ * - Refactor Supreme: Antigravity Agent
+ */
+
+// URL de la API en entorno remoto / dev
 const API_ENDPOINTS = {
-  DEV_BACKEND: "http://localhost:8000/sentiment",
+  DEV_BACKEND: "http://localhost:8000/api/sentiment/analyze",
   MODEL_LINEAR: "http://159.112.150.158:8080/predict",
   MODEL_BILSTM: "http://149.130.183.97:8080/predict"
 };
@@ -221,17 +230,26 @@ function analyze() {
     alert("funcionalidad de compartir (en desarrollo).");
   });
 
+  // ID para feedback (si existe)
+  const analysisId = data.id;
+
   // Botón me gusta (corazón ♥)
   const likeBtn = document.createElement("button");
   likeBtn.type = "button";
   likeBtn.className = "action-btn";
   likeBtn.innerHTML = `
     <span class="action-icon-circle">
-      <span class="icon-heart-like">♥</span>
+      <span class="icon-heart-like">👍</span>
     </span>
   `;
   likeBtn.addEventListener("click", () => {
-    alert("feedback positivo registrado (en desarrollo).");
+    if (!analysisId) {
+      alert("No se puede guardar feedback de esta versión antigua.");
+      return;
+    }
+    fetch("http://localhost:8000/api/sentiment/feedback/" + analysisId + "?type=LIKE", { method: "POST" })
+      .then(() => alert("Gracias por tu feedback!"))
+      .catch(e => console.error(e));
   });
 
   // Botón no me gusta (corazón ♥ rayado con CSS)
@@ -240,17 +258,27 @@ function analyze() {
   dislikeBtn.className = "action-btn";
   dislikeBtn.innerHTML = `
     <span class="action-icon-circle">
-      <span class="icon-heart-dislike">♥</span>
+      <span class="icon-heart-dislike">👎</span>
     </span>
   `;
   dislikeBtn.addEventListener("click", () => {
-    alert("feedback negativo registrado (en desarrollo).");
+    if (!analysisId) {
+      alert("No se puede guardar feedback de esta versión antigua.");
+      return;
+    }
+    fetch("http://localhost:8000/api/sentiment/feedback/" + analysisId + "?type=DISLIKE", { method: "POST" })
+      .then(() => alert("Feedback negativo registrado."))
+      .catch(e => console.error(e));
   });
 
+  // -- MOVED TO INSIDE .then() to have access to ID -- 
+  // Placeholder container
   actionsDiv.appendChild(moreBtn);
   actionsDiv.appendChild(shareBtn);
-  actionsDiv.appendChild(likeBtn);
-  actionsDiv.appendChild(dislikeBtn);
+  // Like/Dislike appended later upon success
+  const pendingLike = document.createElement("span");
+  actionsDiv.appendChild(pendingLike);
+
 
   // === Botón "nuevo sentimiento" alineado a la derecha ===
   const newCommentBtn = document.createElement("button");
@@ -376,6 +404,28 @@ function analyze() {
           : ""
         }
       `;
+
+      // Inject Like/Dislike logic now that we have data
+      const id = data.id;
+      if (id) {
+        const btnLike = document.createElement("button");
+        btnLike.className = "action-btn";
+        btnLike.innerHTML = '<span class="action-icon-circle">👍</span>';
+        btnLike.onclick = () => fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=LIKE`, { method: "POST" }).then(() => alert("Gracias!"));
+
+        const btnDislike = document.createElement("button");
+        btnDislike.className = "action-btn";
+        btnDislike.innerHTML = '<span class="action-icon-circle">👎</span>';
+        btnDislike.onclick = () => fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=DISLIKE`, { method: "POST" }).then(() => alert("Gracias por el feedback"));
+
+        // Find specific container or append to result actions??
+        // Ideally we selected the actionsDiv reference from outer scope
+        const actionsRowVar = document.querySelector(".result-actions-row:last-child .result-actions");
+        // This selector is risky. Better to use the 'actionsDiv' variable from closure since this is all inside one function 'analyze'.
+        // 'actionsDiv' is available here!
+        actionsDiv.appendChild(btnLike);
+        actionsDiv.appendChild(btnDislike);
+      }
     })
     .catch((error) => {
       console.error("[SentimentalIA] error en fetch:", error);
@@ -540,7 +590,7 @@ function setupDashboardEventHandlers() {
  */
 async function fetchStats(start = null, end = null) {
   try {
-    let url = "http://localhost:8000/api/stats";
+    let url = "http://localhost:8000/api/sentiment/stats";
     const params = new URLSearchParams();
     if (start) params.append("start", start);
     if (end) params.append("end", end);
@@ -555,6 +605,11 @@ async function fetchStats(start = null, end = null) {
     document.getElementById("stat-pos").textContent = data.conteoPorSentimiento["Positivo"] || 0;
     document.getElementById("stat-neu").textContent = data.conteoPorSentimiento["Neutral"] || 0;
     document.getElementById("stat-neg").textContent = data.conteoPorSentimiento["Negativo"] || 0;
+
+    // KPIs G68 Supreme
+    document.getElementById("stat-crit").textContent = (data.criticidad || 0).toFixed(1) + "%";
+    document.getElementById("stat-health").textContent = (data.salud || 0).toFixed(1);
+    document.getElementById("stat-ambassadors").textContent = (data.embajadores || 0).toFixed(1) + "%";
 
     // Renderizar gráfico de dona
     renderDonutChart(data.conteoPorSentimiento, data.totalAnalisis);
@@ -637,28 +692,86 @@ function renderDonutChart(counts, total) {
 /**
  * Obtiene y renderiza el historial de análisis
  */
-async function fetchHistory() {
+/**
+ * Obtiene y renderiza el historial de análisis (Paginado)
+ */
+async function fetchHistory(page = 0) {
   try {
-    const response = await fetch("http://localhost:8000/api/history");
+    currentPage = page;
+    // Ensure PAGE_SIZE is defined or use literal
+    const size = 15;
+    const response = await fetch(`http://localhost:8000/api/sentiment/history?page=${page}&size=${size}`);
     if (!response.ok) throw new Error("Error al obtener historial");
-    const entries = await response.json();
 
+    const data = await response.json();
+    // Spring Page: { content: [], number: 0, totalPages: 1, first: true, last: true ... }
+
+    const entries = data.content;
     const tableBody = document.getElementById("history-table-body");
     tableBody.innerHTML = "";
 
     entries.forEach(entry => {
       const date = new Date(entry.fecha).toLocaleString();
+
+      // Determinar riesgo visual
+      const riesgoInfo = entry.riesgo ? `<span title="${entry.riesgo}" style="color: #ef4444;">⚠️</span>` : "";
+
       tableBody.innerHTML += `
-        <tr>
-          <td>${date}</td>
-          <td title="${entry.text}">${entry.text.substring(0, 50)}${entry.text.length > 50 ? "..." : ""}</td>
-          <td><span class="sentiment-badge ${entry.prevision.toLowerCase()}">${entry.prevision}</span></td>
-          <td>${(entry.probabilidad * 100).toFixed(1)}%</td>
-        </tr>
-      `;
+      <tr>
+        <td>${date}</td>
+        <td title="${entry.text}" style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          ${entry.text.substring(0, 60)}...
+          <button class="action-btn copy-btn" data-text="${entry.text}" title="Copiar">⧉</button>
+        </td>
+        <td><span class="sentiment-badge ${entry.prevision.toLowerCase()}">${entry.prevision}</span></td>
+        <td>${entry.etiqueta || "-"}</td>
+        <td>${riesgoInfo}</td>
+        <td>${(entry.probabilidad * 100).toFixed(1)}%</td>
+        <td>
+          ${entry.feedback === 'LIKE' ? '👍' : ''}
+          ${entry.feedback === 'DISLIKE' ? '👎' : ''}
+        </td>
+      </tr>
+    `;
     });
+
+    // Update controllers
+    const pageInfo = document.getElementById("page-info");
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+
+    if (pageInfo) pageInfo.textContent = `Página ${data.number + 1} de ${data.totalPages}`;
+    if (btnPrev) btnPrev.disabled = data.first;
+    if (btnNext) btnNext.disabled = data.last;
+
+    // Bind copy buttons within table
+    document.querySelectorAll(".copy-btn").forEach(b => {
+      b.onclick = (e) => {
+        const txt = e.target.getAttribute("data-text");
+        navigator.clipboard.writeText(txt);
+        alert("Texto copiado");
+      };
+    });
+
   } catch (error) {
     console.error("[Historial] Error:", error);
+  }
+}
+
+// Setup Pagination Listeners
+function setupPaginationListeners() {
+  const btnPrev = document.getElementById("btn-prev");
+  const btnNext = document.getElementById("btn-next");
+
+  if (btnPrev) {
+    btnPrev.addEventListener("click", () => {
+      if (currentPage > 0) fetchHistory(currentPage - 1);
+    });
+  }
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      fetchHistory(currentPage + 1);
+    });
   }
 }
 
@@ -666,7 +779,7 @@ async function fetchHistory() {
  * Configura la funcionalidad de carga masiva por CSV
  */
 function setupBatchProcessing() {
-  const btn = document.getElementById("btnImportCSV");
+  const btn = document.getElementById("batchButton");
   const input = document.getElementById("csvFileInput");
 
   if (!btn || !input) return;
@@ -733,6 +846,68 @@ function setupBatchProcessing() {
   });
 }
 
+/**
+ * Configura la grabación de voz (Web Speech API)
+ */
+function setupVoiceInput() {
+  const micBtn = document.getElementById("micButton");
+  const textarea = document.getElementById("textInput");
+
+  if (!micBtn || !textarea) return;
+
+  // Verificar soporte
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    micBtn.style.display = "none";
+    console.warn("Web Speech API no soportada en este navegador.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "es-ES";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  let isRecording = false;
+
+  micBtn.addEventListener("click", () => {
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  });
+
+  recognition.onstart = () => {
+    isRecording = true;
+    micBtn.classList.add("recording"); // Necesita CSS para pulsar en rojo
+    micBtn.innerHTML = "🔴";
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove("recording");
+    micBtn.innerHTML = "🎤";
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    if (transcript) {
+      const current = textarea.value ? textarea.value + " " : "";
+      textarea.value = current + transcript;
+      autoResize(textarea);
+      updateInputIcons();
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Error SpeechRecognition:", event.error);
+    isRecording = false;
+    micBtn.classList.remove("recording");
+    micBtn.innerHTML = "🎤";
+  };
+}
+
 // Inicializar cuando el DOM está listo
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -740,6 +915,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setupApiSelector();
   setupNavigation();
   setupBatchProcessing();
+  setupVoiceInput();
+  setupPaginationListeners();
+  setupPaginationListeners();
 
   // Limpieza por si hubiera algún input secundario viejo
   const legacySecondary = document.querySelector(

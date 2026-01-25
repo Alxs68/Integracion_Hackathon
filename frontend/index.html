@@ -18,9 +18,8 @@
       <ul class="nav-links">
         <li><a href="#inicio" class="nav-link active">Inicio</a></li>
         <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
-        <li><a href="#estadisticas" class="nav-link">Estadísticas</a></li>
+        <li><a href="#auditoria" class="nav-link">Auditoría</a></li>
         <li><a href="#docs" class="nav-link">Docs</a></li>
-        <li><a href="#recursos" class="nav-link">Recursos</a></li>
       </ul>
     </nav>
 
@@ -57,35 +56,32 @@
           <textarea id="textInput" class="search-input" placeholder="Haz tu comentario..." rows="3" spellcheck="true"
             autocomplete="off"></textarea>
 
-          <!-- Icono (+) adjuntar -->
-          <button type="button" id="attachButton" class="input-action input-attach" aria-label="Adjuntar archivo">
-            +
+          <!-- Micrófono (Izquierda Abajo) -->
+          <button type="button" id="micButton" class="input-action input-mic" aria-label="Grabar audio"
+            title="Grabar (Web Speech)">
+            🎤
           </button>
 
-          <!-- Selector de idioma ES/PT -->
-          <select id="langSelect" class="input-action input-lang" aria-label="Seleccionar idioma">
-            <option value="es">ES</option>
-            <option value="pt">PT</option>
-          </select>
+          <!-- Lotes (Izquierda Abajo, al lado del Mic) -->
+          <button type="button" id="batchButton" class="input-action input-batch" aria-label="Procesar Lote CSV"
+            title="Cargar CSV">
+            📂
+          </button>
+          <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
 
-          <!-- Botón limpiar (X) -->
+          <!-- Botón Cancelar (X) (Arriba Derecha) -->
           <button type="button" id="clearButton" class="input-action input-clear hidden" aria-label="Limpiar texto">
             ×
           </button>
 
-          <!-- Botón enviar (flecha ↑) -->
+          <!-- Botón Enviar (Flecha) (Abajo Derecha) -->
           <button type="button" id="sendButton" class="input-action input-send hidden"
             aria-label="Analizar sentimiento">
-            ↑
+            ➜
           </button>
         </div>
 
-        <div class="batch-action-container">
-          <button id="btnImportCSV" class="btn-import-batch">
-            <i class="fas fa-file-csv"></i> Procesar Lote CSV
-          </button>
-          <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-        </div>
+
       </section>
 
       <!-- Resultados aparecen DEBAJO del input -->
@@ -124,6 +120,22 @@
         </div>
       </div>
 
+      <!-- KPI Row G68 -->
+      <div class="stats-grid" style="margin-top: 1rem;">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-crit">0%</span>
+          <span class="stat-label">Criticidad</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-health">0.0</span>
+          <span class="stat-label">Salud (G68)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-ambassadors">0%</span>
+          <span class="stat-label">Embajadores</span>
+        </div>
+      </div>
+
       <div class="dashboard-charts">
         <div class="chart-container">
           <h3>Distribución General</h3>
@@ -141,22 +153,32 @@
       </div>
     </section>
 
-    <section id="estadisticas" class="content-section hidden">
+    <section id="auditoria" class="content-section hidden">
       <h2 class="section-title">Minería e Historial de Auditoría</h2>
-      <div class="table-container history-scroll" style="max-height: 500px; overflow-y: auto;">
+      <div class="table-container history-scroll" style="min-height: 400px;">
         <table class="history-table">
           <thead>
             <tr>
-              <th style="position: sticky; top: 0; z-index: 10;">🕒 Fecha</th>
-              <th style="position: sticky; top: 0; z-index: 10;">💬 Comentario</th>
-              <th style="position: sticky; top: 0; z-index: 10;">📊 Sentimiento</th>
-              <th style="position: sticky; top: 0; z-index: 10;">🎯 Confianza</th>
+              <th>🕒 Fecha</th>
+              <th>💬 Comentario</th>
+              <th>📊 Sentimiento</th>
+              <th>🏷️ Etiqueta</th>
+              <th>⚠️ Riesgo</th>
+              <th>🎯 Conf.</th>
+              <th>👍/👎</th>
             </tr>
           </thead>
           <tbody id="history-table-body">
-            <!-- Se llenará vía JS (Top 50 registros) -->
+            <!-- Se llenará vía JS -->
           </tbody>
         </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-controls">
+        <button id="btn-prev" class="btn-page" disabled>Anterior</button>
+        <span id="page-info">Página 1</span>
+        <button id="btn-next" class="btn-page">Siguiente</button>
       </div>
     </section>
 
@@ -184,23 +206,7 @@ Respuesta: { "prevision", "probabilidad", "top_features" }</pre>
       </div>
     </section>
 
-    <section id="recursos" class="content-section hidden">
-      <h2 class="section-title">Artefactos del Proyecto</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-value" style="font-size: 1.2rem;">Datsets</span>
-          <span class="stat-label">Corpus G68</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" style="font-size: 1.2rem;">Modelos</span>
-          <span class="stat-label">Bi-LSTM / Linear</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" style="font-size: 1.2rem;">Notebooks</span>
-          <span class="stat-label">Jupyter Lab</span>
-        </div>
-      </div>
-    </section>
+
   </main>
 
   <script src="app.js?v=4"></script>
