@@ -686,6 +686,10 @@ async function fetchHistory(page = 0) {
             <td>${entry.etiqueta || "-"}</td>
             <td>${riesgoInfo}</td>
             <td>${entry.probabilidad ? (entry.probabilidad * 100).toFixed(1) : 0}%</td>
+            <td>
+              <button class="action-btn feedback-btn ${entry.feedback === 'LIKE' ? 'active' : ''}" data-id="${entry.id}" data-type="LIKE" title="Me gusta">👍</button>
+              <button class="action-btn feedback-btn ${entry.feedback === 'DISLIKE' ? 'active' : ''}" data-id="${entry.id}" data-type="DISLIKE" title="No me gusta">👎</button>
+            </td>
           </tr>
           `;
       } catch (rowErr) {
@@ -703,6 +707,29 @@ async function fetchHistory(page = 0) {
         const txt = e.target.getAttribute("data-text");
         navigator.clipboard.writeText(txt);
         alert("Texto copiado");
+      };
+    });
+
+    // Bind Feedback Buttons
+    document.querySelectorAll(".feedback-btn").forEach(btn => {
+      btn.onclick = async (e) => {
+        const id = btn.getAttribute("data-id");
+        const type = btn.getAttribute("data-type");
+        if (!id) return;
+
+        try {
+          // Visual feedback immediate
+          const row = btn.closest("td");
+          const siblings = row.querySelectorAll(".feedback-btn");
+          siblings.forEach(s => s.classList.remove("active"));
+          btn.classList.add("active");
+
+          await fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=${type}`, { method: "POST" });
+          // Optional: silently refresh or just leave it
+        } catch (err) {
+          console.error("Feedback error", err);
+          alert("Error al guardar feedback.");
+        }
       };
     });
 
@@ -824,14 +851,9 @@ function setupBatchProcessing() {
       if (dashLink) dashLink.click();
 
       let processed = 0;
-      // Regex for splitting while respecting quotes for the specific separator
-      // Note: This regex is tricky for dynamic separators. We will use a simpler approach for stability:
-      // If it's semicolon, we split by semicolon (assuming no semicolons in text or simple replacement).
-      // For a Hackathon/Demo, simple split is often safer unless complex CSVs are used.
 
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i];
-
         let text = "";
 
         if (separator === ";") {
@@ -855,10 +877,9 @@ function setupBatchProcessing() {
             });
             processed++;
 
-            // Visual feedback every 1 row for "speed" feel in demo
-            if (processed % 1 === 0) {
-              btn.innerHTML = `< i class="fas fa-spinner fa-spin" ></i > CSV(${processed})`; // Show count inside button
-              // Update stats immediately on EVERY row to show "movement"
+            // Visual feedback every 5 rows to avoid UI lag
+            if (processed % 5 === 0) {
+              btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> CSV (${processed})`;
               await fetchStats();
             }
           } catch (err) {
@@ -868,10 +889,14 @@ function setupBatchProcessing() {
       }
 
       btn.disabled = false;
-      btn.innerHTML = `< i class="fas fa-file-csv" ></i > CSV`; // Revert to folder icon
+      btn.innerHTML = `<i class="fas fa-file-csv"></i> CSV`; // Revert to folder icon
       btn.title = "Cargar CSV";
+
+      // Final Update
+      await fetchStats();
+      await fetchHistory(0);
+
       alert(`Se procesaron ${processed} reseñas exitosamente.`);
-      fetchStats();
       input.value = "";
     };
     reader.readAsText(file);

@@ -104,11 +104,7 @@ public class SentimentService {
                 .count();
         double embajadores = (total > 0) ? ((double) verySatisfiedCount / totalD) * 100.0 : 0.0;
 
-        return new SentimentStats(
-                total,
-                counts,
-                keywords, // keywords
-                new HashMap<>(), // confidenceBins
+
         // Logic to extract top features
         // Helper function (map String -> count)
         Map<String, Long> posFreq = new HashMap<>();
