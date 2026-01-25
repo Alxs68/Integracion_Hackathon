@@ -6,7 +6,6 @@
   <title>Sentimental IA – Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -21,6 +20,7 @@
         <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
         <li><a href="#estadisticas" class="nav-link">Estadísticas</a></li>
         <li><a href="#docs" class="nav-link">Docs</a></li>
+        <li><a href="#recursos" class="nav-link">Recursos</a></li>
       </ul>
     </nav>
 
@@ -41,59 +41,52 @@
     </section>
 
     <section class="conversation" id="inicio">
+      <!-- Selector de modelo / endpoint activo -->
+      <div class="api-selector">
+        <label for="apiSelect">Modelo activo:</label>
+        <select id="apiSelect">
+          <option value="DEV_BACKEND">Sistema Híbrido G68 (Local)</option>
+          <option value="MODEL_LINEAR">Modelo Linear (Temporal)</option>
+          <option value="MODEL_BILSTM">Modelo Bi-LSTM OCI</option>
+        </select>
+      </div>
 
-      <!-- Contenedor Principal de Interacción (Centrado) -->
-      <div class="main-interaction-container">
+      <!-- Área de entrada principal (único textInput) -->
+      <section class="input-area">
+        <div class="input-wrapper">
+          <textarea id="textInput" class="search-input" placeholder="Haz tu comentario..." rows="3" spellcheck="true"
+            autocomplete="off"></textarea>
 
-        <!-- Lado Izquierdo: Botón Batch -->
-        <div class="batch-side-col">
-          <button id="btnImportCSV" class="btn-import-batch" title="Procesar Lote CSV">
+          <!-- Icono (+) adjuntar -->
+          <button type="button" id="attachButton" class="input-action input-attach" aria-label="Adjuntar archivo">
+            +
+          </button>
+
+          <!-- Selector de idioma ES/PT -->
+          <select id="langSelect" class="input-action input-lang" aria-label="Seleccionar idioma">
+            <option value="es">ES</option>
+            <option value="pt">PT</option>
+          </select>
+
+          <!-- Botón limpiar (X) -->
+          <button type="button" id="clearButton" class="input-action input-clear hidden" aria-label="Limpiar texto">
+            ×
+          </button>
+
+          <!-- Botón enviar (flecha ↑) -->
+          <button type="button" id="sendButton" class="input-action input-send hidden"
+            aria-label="Analizar sentimiento">
+            ↑
+          </button>
+        </div>
+
+        <div class="batch-action-container">
+          <button id="btnImportCSV" class="btn-import-batch">
             <i class="fas fa-file-csv"></i> Procesar Lote CSV
           </button>
           <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
         </div>
-
-        <!-- Lado Derecho: Columna de Input y Selector -->
-        <div class="input-side-col">
-          <!-- Selector (Label arriba izquierda) -->
-          <div class="api-selector-inline">
-            <label for="apiSelect">Modelo activo:</label>
-            <select id="apiSelect">
-              <option value="DEV_BACKEND">Sistema Híbrido G68 (Local)</option>
-              <option value="MODEL_LINEAR">Modelo Linear (Temporal)</option>
-              <option value="MODEL_BILSTM">Modelo Bi-LSTM OCI</option>
-            </select>
-          </div>
-
-          <!-- Caja de Texto -->
-          <div class="input-wrapper">
-            <textarea id="textInput" class="search-input" placeholder="Haz tu comentario..." rows="3" spellcheck="true"
-              autocomplete="off"></textarea>
-
-            <!-- Icono (+) adjuntar -->
-            <button type="button" id="attachButton" class="input-action input-attach" aria-label="Adjuntar archivo">
-              +
-            </button>
-
-            <!-- Selector de idioma ES/PT -->
-            <select id="langSelect" class="input-action input-lang" aria-label="Seleccionar idioma">
-              <option value="es">ES</option>
-              <option value="pt">PT</option>
-            </select>
-
-            <!-- Botón limpiar (X) -->
-            <button type="button" id="clearButton" class="input-action input-clear hidden" aria-label="Limpiar texto">
-              ×
-            </button>
-
-            <!-- Botón enviar (flecha ↑) -->
-            <button type="button" id="sendButton" class="input-action input-send hidden"
-              aria-label="Analizar sentimiento">
-              ↑
-            </button>
-          </div>
-        </div>
-      </div>
+      </section>
 
       <!-- Resultados aparecen DEBAJO del input -->
       <div id="history" class="history"></div>
@@ -103,11 +96,12 @@
     <section id="dashboard" class="content-section hidden">
       <div class="section-header-row">
         <h2 class="section-title">Panel de Auditoría de Sentimiento</h2>
-        <div class="date-filters">
-          <input type="date" id="filter-start" class="date-input" title="Fecha Inicio">
+        <div class="date-filters disabled-feature" title="Próximamente: Filtrado por Rango de Fechas">
+          <input type="date" id="filter-start" class="date-input" disabled title="Próximamente">
           <span class="date-sep">→</span>
-          <input type="date" id="filter-end" class="date-input" title="Fecha Fin">
-          <button id="btn-apply-filters" class="btn-apply">Filtrar</button>
+          <input type="date" id="filter-end" class="date-input" disabled title="Próximamente">
+          <button id="btn-apply-filters" class="btn-apply" disabled
+            style="opacity: 0.5; cursor: not-allowed;">Filtrar</button>
         </div>
       </div>
 
@@ -138,28 +132,18 @@
             <div id="donut-legend" class="donut-legend"></div>
           </div>
         </div>
+        <div class="chart-container">
+          <h3>Palabras Clave Críticas</h3>
+          <ul id="top-keywords-list" class="keywords-analytics">
+            <!-- Se llenará vía JS -->
+          </ul>
+        </div>
       </div>
     </section>
 
     <section id="estadisticas" class="content-section hidden">
       <h2 class="section-title">Minería e Historial de Auditoría</h2>
-
-      <!-- Gráficos Superiores (Ancho Completo) -->
-      <div class="chart-container glass">
-        <h3>Mapa de Frases Positivas</h3>
-        <canvas id="posNgramsChart"></canvas>
-      </div>
-      <div class="chart-container glass">
-        <h3>Mapa de Frases Negativas</h3>
-        <canvas id="negNgramsChart"></canvas>
-      </div>
-      <div class="chart-container glass" style="grid-column: span 2;">
-        <h3>Ranking de Alertas Críticas (Casos Graves)</h3>
-        <canvas id="criticalCasesChart"></canvas>
-      </div>
-
-      <!-- Historial Inferior (Limitado a 5 registros) -->
-      <div class="table-container history-scroll" style="margin-top: 1.5rem;">
+      <div class="table-container history-scroll" style="max-height: 500px; overflow-y: auto;">
         <table class="history-table">
           <thead>
             <tr>
@@ -170,54 +154,56 @@
             </tr>
           </thead>
           <tbody id="history-table-body">
-            <!-- Cargado por JS (Top 5) -->
+            <!-- Se llenará vía JS (Top 50 registros) -->
           </tbody>
         </table>
-      </div>
-
-      <div class="pagination-controls" style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
-        <button id="prevPage" class="action-btn glass" style="padding: 0.5rem 1rem;">← Anterior</button>
-        <span id="currentPageLabel" style="color: var(--text-secondary); align-self: center;">Página 1</span>
-        <button id="nextPage" class="action-btn glass" style="padding: 0.5rem 1rem;">Siguiente →</button>
       </div>
     </section>
 
     <section id="docs" class="content-section hidden">
-      <h2 class="section-title">Documentación Técnica G68</h2>
-      <div class="dashboard-charts" style="grid-template-columns: 1fr; gap: 1.5rem;">
-        <div class="chart-container glass" style="height: auto; padding: 1.5rem;">
-          <h3>🔬 Funcionamiento del Motor Híbrido G68</h3>
-          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
-            El motor de análisis de sentimiento G68 utiliza un enfoque <strong>híbrido de dos capas</strong> para
-            maximizar la precisión:
-          </p>
-          <ul
-            style="color: var(--text-secondary); font-size: 0.85rem; margin-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.8;">
-            <li><strong>Capa 1 (Estadística):</strong> Un modelo Bi-LSTM (Long Short-Term Memory) entrenado con un
-              corpus masivo procesa la estructura gramatical y el contexto global de la frase.</li>
-            <li><strong>Capa 2 (Veto y Heurística):</strong> Un sistema de reglas de negocio busca términos críticos
-              predefinidos. Si se detectan conceptos de alta gravedad (problemas de higiene, seguridad o estafas), el
-              motor puede aplicar un "Veto de Negatividad", garantizando que las alertas no pasen desapercibidas.</li>
-            <li><strong>Explicabilidad:</strong> El motor extrae "Top Features" que resaltan las palabras exactas que
-              inclinaron la balanza del sentimiento, permitiendo una trazabilidad total.</li>
-          </ul>
-          <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
-            <h4 style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--accent-color);">Contrato de Integración:
-            </h4>
-            <pre style="font-size: 0.75rem; color: #fff; margin: 0;">
+      <h2 class="section-title">Documentación Técnica e Interoperabilidad</h2>
+      <div class="dashboard-charts">
+        <div class="chart-container">
+          <h3>Frontend ↔ Backend (Java)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Comunicación vía REST con Spring Boot. Manejo de
+            estados de carga y persistencia en H2.</p>
+          <pre
+            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
+GET /api/stats?start=ISO&end=ISO
+POST /sentiment { "text": "..." }</pre>
+        </div>
+        <div class="chart-container">
+          <h3>Backend (Java) ↔ ML (Python)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Integración síncrona mediante Feign/RestTemplate.
+            El motor Python procesa la lógica híbrida.</p>
+          <pre
+            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
 POST /predict/sentiment
-{
-  "text": "..."
-}
-→ { "prevision": "Negativo", "probabilidad": 0.99, "top_features": ["suciedad", "local"] }</pre>
-          </div>
+Respuesta: { "prevision", "probabilidad", "top_features" }</pre>
         </div>
       </div>
     </section>
 
+    <section id="recursos" class="content-section hidden">
+      <h2 class="section-title">Artefactos del Proyecto</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Datsets</span>
+          <span class="stat-label">Corpus G68</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Modelos</span>
+          <span class="stat-label">Bi-LSTM / Linear</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" style="font-size: 1.2rem;">Notebooks</span>
+          <span class="stat-label">Jupyter Lab</span>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <script src="app.js?v=11"></script>
+  <script src="app.js?v=4"></script>
 </body>
 
 </html>

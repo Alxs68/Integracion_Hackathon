@@ -14,11 +14,6 @@ let ACTIVE_API = API_ENDPOINTS.DEV_BACKEND;
 
 let hasFirstMessageSent = false;
 
-// Variables globales para instancias de Chart.js
-let confidenceChartInstance = null;
-let featuresChartInstance = null;
-let currentHistoryPage = 0;
-
 /**
  * Ajusta dinámicamente la altura del textarea según el contenido
  */
@@ -69,9 +64,6 @@ function toggleTheme() {
     localStorage.setItem("g68-theme", "light");
     console.log("[SentimentalIA] tema manual: claro");
   }
-
-  // Actualizar gráficos para que tomen los nuevos colores de variables CSS
-  fetchStats(null, null);
 }
 
 /**
@@ -523,11 +515,7 @@ function setupNavigation() {
         fetchStats();
         setupDashboardEventHandlers();
       }
-      if (targetId === "estadisticas") {
-        currentHistoryPage = 0;
-        fetchHistory(0);
-        fetchStats(); // Cargar estadísticas globales para los gráficos
-      }
+      if (targetId === "estadisticas") fetchHistory();
     });
   });
 }
@@ -571,13 +559,30 @@ async function fetchStats(start = null, end = null) {
     // Renderizar gráfico de dona
     renderDonutChart(data.conteoPorSentimiento, data.totalAnalisis);
 
-    // Las Keywords ya no se renderizan en el Dashboard simplificado (solo Estadísticas)
+    // Renderizar Keywords con desglose de sentimientos
+    const keywordsList = document.getElementById("top-keywords-list");
+    keywordsList.innerHTML = "";
 
+    // data.topPalabrasClave es ahora una lista de objetos KeywordStats
+    data.topPalabrasClave.forEach(item => {
+      const posPct = item.count > 0 ? (item.positive / item.count * 100) : 0;
+      const neuPct = item.count > 0 ? (item.neutral / item.count * 100) : 0;
+      const negPct = item.count > 0 ? (item.negative / item.count * 100) : 0;
 
-    // Renderizar Mapa de Features Global
-    if (data.topPalabrasClave) {
-      renderFeaturesMap(data.topPalabrasClave);
-    }
+      keywordsList.innerHTML += `
+        <li class="kw-analytics-item">
+          <div class="kw-header">
+            <span class="kw-name">${item.word}</span>
+            <span class="kw-total">${item.count} menciones</span>
+          </div>
+          <div class="kw-bar-group">
+            <div class="kw-seg pos" style="width: ${posPct}%" title="Positivas: ${item.positive}"></div>
+            <div class="kw-seg neu" style="width: ${neuPct}%" title="Neutras: ${item.neutral}"></div>
+            <div class="kw-seg neg" style="width: ${negPct}%" title="Negativas: ${item.negative}"></div>
+          </div>
+        </li>
+      `;
+    });
 
   } catch (error) {
     console.error("[Dashboard] Error:", error);
@@ -632,28 +637,17 @@ function renderDonutChart(counts, total) {
 /**
  * Obtiene y renderiza el historial de análisis
  */
-async function fetchHistory(page = 0) {
+async function fetchHistory() {
   try {
-    const response = await fetch(`http://localhost:8000/api/history?page=${page}`);
+    const response = await fetch("http://localhost:8000/api/history");
     if (!response.ok) throw new Error("Error al obtener historial");
     const entries = await response.json();
-
-    // Actualizar controles de UI
-    currentHistoryPage = page;
-    const label = document.getElementById("currentPageLabel");
-    if (label) label.textContent = `Página ${page + 1}`;
-
-    const prevBtn = document.getElementById("prevPage");
-    const nextBtn = document.getElementById("nextPage");
-    if (prevBtn) prevBtn.disabled = (page === 0);
-    // Para simplificar, deshabilitamos next si vienen menos de 5
-    if (nextBtn) nextBtn.disabled = (entries.length < 5);
 
     const tableBody = document.getElementById("history-table-body");
     tableBody.innerHTML = "";
 
     entries.forEach(entry => {
-      const date = new Date(entry.fecha).toLocaleDateString(); // Removido .toLocaleString()
+      const date = new Date(entry.fecha).toLocaleString();
       tableBody.innerHTML += `
         <tr>
           <td>${date}</td>
@@ -663,142 +657,9 @@ async function fetchHistory(page = 0) {
         </tr>
       `;
     });
-
-    // Procesar visualizaciones avanzadas (N-grams y Alertas)
-    processAdvancedVisuals(entries);
-
   } catch (error) {
     console.error("[Historial] Error:", error);
   }
-}
-
-/**
- * Procesa los datos del historial para generar las estadísticas avanzadas
- */
-function processAdvancedStats(entries) {
-  if (!entries || entries.length === 0) return;
-
-  // 1. Histograma de Confianza (Agrupado por sentimiento)
-  const binsBySentiment = {
-    "Positivo": new Array(10).fill(0),
-    "Neutral": new Array(10).fill(0),
-    "Negativo": new Array(10).fill(0)
-  };
-
-  entries.forEach(entry => {
-    const prob = entry.probabilidad || 0;
-    const bin = Math.min(Math.floor(prob * 10), 9);
-
-    // Normalizar sentimiento
-    let sent = (entry.prevision || "Neutral");
-    if (sent.toLowerCase() === "neutro") sent = "Neutral";
-    sent = sent.charAt(0).toUpperCase() + sent.slice(1).toLowerCase();
-
-    if (binsBySentiment[sent]) {
-      binsBySentiment[sent][bin]++;
-    }
-  });
-
-  // 2. Top Features (Mapa Semántico)
-  const featureCounts = {};
-  entries.forEach(entry => {
-    const features = entry.topFeatures || entry.top_features || "";
-    if (features && features !== "N/A" && features !== "null") {
-      const words = features.split(",").map(w => w.trim().toLowerCase());
-      words.forEach(w => {
-        if (w.length > 2) {
-          featureCounts[w] = (featureCounts[w] || 0) + 1;
-        }
-      });
-    }
-  });
-
-  // Ordenar features por frecuencia y tomar top 10
-  const topFeatures = Object.entries(featureCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
-
-  renderFeaturesMap(topFeatures);
-}
-
-
-/**
- * Renderiza el Mapa de Features (Bar Chart Horizontal Grouped) usando Chart.js
- */
-function renderFeaturesMap(keywords) {
-  const ctx = document.getElementById('featuresChart');
-  if (!ctx) return;
-
-  if (featuresChartInstance) {
-    featuresChartInstance.destroy();
-  }
-
-  const labels = keywords.map(kw => kw.word);
-  const posData = keywords.map(kw => kw.positive);
-  const negData = keywords.map(kw => kw.negative);
-  const neuData = keywords.map(kw => kw.neutral);
-
-  const isLight = document.body.classList.contains('theme-light');
-  const textColor = isLight ? '#4b5563' : '#94a3b8';
-  const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)';
-
-  featuresChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Positivo',
-          data: posData,
-          backgroundColor: '#3b82f6',
-          borderRadius: 4
-        },
-        {
-          label: 'Negativo',
-          data: negData,
-          backgroundColor: '#f97316',
-          borderRadius: 4
-        }
-      ]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        intersect: false,
-        mode: 'index',
-        axis: 'y'
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: { color: textColor, font: { size: 10 }, boxWidth: 12 }
-        },
-        tooltip: {
-          backgroundColor: isLight ? 'rgba(255, 255, 255, 0.95)' : 'rgba(15, 23, 42, 0.9)',
-          titleColor: isLight ? '#111827' : '#fff',
-          bodyColor: isLight ? '#475569' : '#cbd5e1',
-          borderColor: isLight ? '#e2e8f0' : 'transparent',
-          borderWidth: 1,
-          padding: 10,
-          displayColors: true
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          grid: { color: gridColor },
-          ticks: { color: textColor, font: { size: 10 } }
-        },
-        y: {
-          grid: { display: false },
-          ticks: { color: textColor, font: { size: 10 } }
-        }
-      }
-    }
-  });
 }
 
 /**
@@ -872,26 +733,6 @@ function setupBatchProcessing() {
   });
 }
 
-function setupPagination() {
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-
-  if (prevBtn) {
-    prevBtn.addEventListener("click", () => {
-      if (currentHistoryPage > 0) {
-        fetchHistory(currentHistoryPage - 1);
-      }
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      fetchHistory(currentHistoryPage + 1);
-    });
-  }
-}
-
-
 // Inicializar cuando el DOM está listo
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -899,7 +740,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupApiSelector();
   setupNavigation();
   setupBatchProcessing();
-  setupPagination();
 
   // Limpieza por si hubiera algún input secundario viejo
   const legacySecondary = document.querySelector(

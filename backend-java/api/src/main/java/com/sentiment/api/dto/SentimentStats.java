@@ -11,6 +11,9 @@ public record SentimentStats(
                 List<PhraseStats> topPositiveFeatures,
                 List<PhraseStats> topNegativeFeatures,
                 List<PhraseStats> topGlobalCriticalFeatures,
+                double criticidad,
+                double salud,
+                double embajadores,
                 BoxPlotStats positiveBoxPlot,
                 BoxPlotStats negativeBoxPlot) {
 
