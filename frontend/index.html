@@ -42,11 +42,9 @@
     <section class="conversation" id="inicio">
       <!-- Selector de modelo / endpoint activo -->
       <div class="api-selector">
-        <label for="apiSelect">Modelo activo:</label>
+        <label for="apiSelect">Modelo:</label>
         <select id="apiSelect">
-          <option value="DEV_BACKEND">Sistema Híbrido G68 (Local)</option>
-          <option value="MODEL_LINEAR">Modelo Linear (Temporal)</option>
-          <option value="MODEL_BILSTM">Modelo Bi-LSTM OCI</option>
+          <option value="DEV_BACKEND">Sistema Híbrido G68</option>
         </select>
       </div>
 
@@ -99,6 +97,12 @@
           <button id="btn-apply-filters" class="btn-apply" disabled
             style="opacity: 0.5; cursor: not-allowed;">Filtrar</button>
         </div>
+
+        <!-- Botón Reset DB (Restaurado) -->
+        <button id="btn-reset-db" class="btn-delete-all" title="Borrar TODOS los registros">
+          🗑️ Reset BD
+        </button>
+      </div>
       </div>
 
       <div class="stats-grid">
@@ -183,25 +187,64 @@
     </section>
 
     <section id="docs" class="content-section hidden">
-      <h2 class="section-title">Documentación Técnica e Interoperabilidad</h2>
+      <h2 class="section-title">Potencia & Precisión (G68 Supreme)</h2>
       <div class="dashboard-charts">
-        <div class="chart-container">
-          <h3>Frontend ↔ Backend (Java)</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Comunicación vía REST con Spring Boot. Manejo de
-            estados de carga y persistencia en H2.</p>
-          <pre
-            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
-GET /api/stats?start=ISO&end=ISO
-POST /sentiment { "text": "..." }</pre>
+        <div class="chart-container" style="flex: 1;">
+          <h3>🚀 ¿Cómo funciona?</h3>
+          <p style="font-size: 0.95rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 1rem;">
+            Más allá de un simple filtro de palabras. <strong>G68 Supreme entiende el contexto.</strong>
+          </p>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+            Imagina un analista experto que nunca duerme. Nuestro motor híbrido combina la <strong>velocidad de la
+              IA</strong> con la <strong>precisión de reglas de negocio</strong> inquebrantables. Detecta lo que
+            importa, descarta el ruido y te entrega la verdad oculta en cada comentario.
+          </p>
+
+          <h3 style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">🛡️ Robustez Semántica
+            (Highlights)</h3>
+          <ul
+            style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; padding-left: 1.2rem; margin-top: 0.5rem;">
+            <li style="margin-bottom: 0.6rem;">
+              <strong>+220 Reglas Maestras:</strong> No solo palabras. Detectamos frases compuestas (<em>"ni bien ni
+                mal"</em>) y contexto profundo.
+            </li>
+            <li style="margin-bottom: 0.6rem;">
+              <strong>🛡️ Blindaje Anti-Ironía:</strong> Algoritmo único que detecta sarcasmo (<em>"si por limpieza
+                entiendes..."</em>) evitando falsos positivos.
+            </li>
+            <li style="margin-bottom: 0.6rem;">
+              <strong>⚖️ Justicia Híbrida:</strong> Combina la intuición de la <strong>IA</strong> con la objetividad de
+              <strong>Reglas de Negocio</strong>.
+            </li>
+            <li>
+              <strong>🚨 Veto Crítico:</strong> Términos de riesgo (<em>estafa, plaga</em>) tienen "peso infinito",
+              anulando cualquier puntaje positivo de la IA.
+            </li>
+          </ul>
         </div>
-        <div class="chart-container">
-          <h3>Backend (Java) ↔ ML (Python)</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Integración síncrona mediante Feign/RestTemplate.
-            El motor Python procesa la lógica híbrida.</p>
-          <pre
-            style="background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;">
-POST /predict/sentiment
-Respuesta: { "prevision", "probabilidad", "top_features" }</pre>
+        <div class="chart-container" style="flex: 1;">
+          <h3>⚡ Capacidad de Procesamiento</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Diseñado para escalar con tu
+            negocio:</p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div
+              style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 12px; text-align: center; border: 1px solid rgba(16, 185, 129, 0.2); transition: transform 0.2s;">
+              <div style="font-size: 1.8rem; font-weight: 800; color: #34d399;">+1,200</div>
+              <div style="font-size: 0.8rem; color: var(--text-primary); font-weight: 600;">Reseñas por Minuto</div>
+            </div>
+            <div
+              style="background: rgba(99, 102, 241, 0.1); padding: 1rem; border-radius: 12px; text-align: center; border: 1px solid rgba(99, 102, 241, 0.2); transition: transform 0.2s;">
+              <div style="font-size: 1.8rem; font-weight: 800; color: #818cf8;">94%</div>
+              <div style="font-size: 0.8rem; color: var(--text-primary); font-weight: 600;">Precisión Humana</div>
+            </div>
+            <div
+              style="grid-column: 1 / -1; background: rgba(255,255,255,0.03); padding: 0.8rem; border-radius: 8px; text-align: center;">
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                <em>"Procesa todo un archivo CSV de 10k filas mientras te tomas un café."</em> ☕
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class SentimentService {
     private final SentimentAnalysisRepository repository;
     private final RestTemplate restTemplate;
-    private final String PYTHON_URL = "http://localhost:8080/predict";
+    private final String PYTHON_URL = "http://localhost:8080/predict/sentiment";
 
     public SentimentService(SentimentAnalysisRepository repository, RestTemplate restTemplate) {
         this.repository = repository;
@@ -34,6 +33,8 @@ public class SentimentService {
             entity.setPrevision(pythonResponse.prevision());
             entity.setProbabilidad(pythonResponse.probabilidad());
             entity.setTopFeatures(pythonResponse.top_features());
+            entity.setEtiqueta(pythonResponse.etiqueta()); // Missing Link Fix
+            entity.setRiesgo(pythonResponse.riesgo()); // Missing Link Fix
             entity.setFecha(LocalDateTime.now());
 
             SentimentAnalysis saved = repository.save(entity);
@@ -108,14 +109,63 @@ public class SentimentService {
                 counts,
                 keywords, // keywords
                 new HashMap<>(), // confidenceBins
-                new ArrayList<>(), // topPositive
-                new ArrayList<>(), // topNegative
-                new ArrayList<>(), // topCritical
+        // Logic to extract top features
+        // Helper function (map String -> count)
+        Map<String, Long> posFreq = new HashMap<>();
+        Map<String, Long> negFreq = new HashMap<>();
+        Map<String, Long> critFreq = new HashMap<>();
+
+        for (SentimentAnalysis a : all) {
+            String features = a.getTopFeatures();
+            if (features == null || features.isEmpty()) continue;
+            
+            String[] words = features.split("\\|");
+            
+            boolean isPos = "Positivo".equalsIgnoreCase(a.getPrevision()) || "Positive".equalsIgnoreCase(a.getPrevision());
+            boolean isNeg = "Negativo".equalsIgnoreCase(a.getPrevision()) || "Negative".equalsIgnoreCase(a.getPrevision());
+            boolean isCrit = (a.getRiesgo() != null && !a.getRiesgo().isEmpty());
+
+            for (String w : words) {
+                String clean = w.trim();
+                if (clean.length() < 3) continue;
+                if (clean.equalsIgnoreCase("análisis contextual")) continue;
+
+                if (isPos) posFreq.put(clean, posFreq.getOrDefault(clean, 0L) + 1);
+                if (isNeg) negFreq.put(clean, negFreq.getOrDefault(clean, 0L) + 1);
+                if (isCrit) critFreq.put(clean, critFreq.getOrDefault(clean, 0L) + 1);
+            }
+        }
+
+        // Convert and Sort Helper
+        java.util.function.Function<Map<String, Long>, List<SentimentStats.PhraseStats>> toSortedList = (map) -> {
+            return map.entrySet().stream()
+                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Descending
+                    .limit(5)
+                    .map(e -> new SentimentStats.PhraseStats(e.getKey(), e.getValue()))
+                    .collect(java.util.stream.Collectors.toList());
+        };
+
+        List<SentimentStats.PhraseStats> topPos = toSortedList.apply(posFreq);
+        List<SentimentStats.PhraseStats> topNeg = toSortedList.apply(negFreq);
+        List<SentimentStats.PhraseStats> topCrit = toSortedList.apply(critFreq);
+
+        return new SentimentStats(
+                total,
+                counts,
+                keywords, // keywords
+                new HashMap<>(), // confidenceBins
+                topPos, // topPositive
+                topNeg, // topNegative
+                topCrit, // topCritical
                 criticidad, // Added
                 salud, // Added
                 embajadores, // Added
                 null, // posBoxPlot
                 null // negBoxPlot
         );
+    }
+
+    public void resetDatabase() {
+        repository.deleteAll();
     }
 }

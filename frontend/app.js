@@ -208,98 +208,50 @@ function analyze() {
   const actionsDiv = document.createElement("div");
   actionsDiv.className = "result-actions";
 
-  // Botón "más detalles..." (solo icono •••)
-  const moreBtn = document.createElement("button");
-  moreBtn.type = "button";
-  moreBtn.className = "action-btn more-details";
-  moreBtn.innerHTML = `
-    <span class="action-icon-circle"><span>•••</span></span>
-  `;
-  moreBtn.addEventListener("click", () => {
-    alert("más detalles del modelo (en desarrollo).");
-  });
 
-  // Botón compartir (flecha)
+  // Botón compartir (restituido por petición)
   const shareBtn = document.createElement("button");
   shareBtn.type = "button";
   shareBtn.className = "action-btn";
+  shareBtn.title = "Copiar resultado al portapapeles";
   shareBtn.innerHTML = `
     <span class="action-icon-circle"><span>⤴</span></span>
   `;
   shareBtn.addEventListener("click", () => {
-    alert("funcionalidad de compartir (en desarrollo).");
-  });
+    // Texto a copiar: Reseña original + Resultado (si existe)
+    let copyText = `💬 Reseña: "${text}"`;
 
-  // ID para feedback (si existe)
-  const analysisId = data.id;
-
-  // Botón me gusta (corazón ♥)
-  const likeBtn = document.createElement("button");
-  likeBtn.type = "button";
-  likeBtn.className = "action-btn";
-  likeBtn.innerHTML = `
-    <span class="action-icon-circle">
-      <span class="icon-heart-like">👍</span>
-    </span>
-  `;
-  likeBtn.addEventListener("click", () => {
-    if (!analysisId) {
-      alert("No se puede guardar feedback de esta versión antigua.");
-      return;
+    // Intentamos buscar el resultado si ya se renderizó
+    const resultMain = resultDiv.querySelector(".result-main .sentiment-value");
+    if (resultMain) {
+      const sentiment = resultMain.textContent;
+      // Probabilidad
+      const probText = resultDiv.querySelector(".probability")?.textContent.trim() || "";
+      copyText += `\n📊 Resultado: ${sentiment.toUpperCase()} (${probText})`;
+    } else {
+      copyText += `\n(Análisis en proceso...)`;
     }
-    fetch("http://localhost:8000/api/sentiment/feedback/" + analysisId + "?type=LIKE", { method: "POST" })
-      .then(() => alert("Gracias por tu feedback!"))
-      .catch(e => console.error(e));
+
+    // Copiar al clipboard
+    navigator.clipboard.writeText(copyText).then(() => {
+      alert("¡Reseña copiada al portapapeles!");
+    }).catch(err => {
+      console.error("Error al copiar: ", err);
+      alert("No se pudo copiar (permisos de navegador bloqueados).");
+    });
   });
 
-  // Botón no me gusta (corazón ♥ rayado con CSS)
-  const dislikeBtn = document.createElement("button");
-  dislikeBtn.type = "button";
-  dislikeBtn.className = "action-btn";
-  dislikeBtn.innerHTML = `
-    <span class="action-icon-circle">
-      <span class="icon-heart-dislike">👎</span>
-    </span>
-  `;
-  dislikeBtn.addEventListener("click", () => {
-    if (!analysisId) {
-      alert("No se puede guardar feedback de esta versión antigua.");
-      return;
-    }
-    fetch("http://localhost:8000/api/sentiment/feedback/" + analysisId + "?type=DISLIKE", { method: "POST" })
-      .then(() => alert("Feedback negativo registrado."))
-      .catch(e => console.error(e));
-  });
-
-  // -- MOVED TO INSIDE .then() to have access to ID -- 
   // Placeholder container
-  actionsDiv.appendChild(moreBtn);
   actionsDiv.appendChild(shareBtn);
-  // Like/Dislike appended later upon success
+
+  // Like/Dislike will be appended later upon success (see .then block)
   const pendingLike = document.createElement("span");
   actionsDiv.appendChild(pendingLike);
 
-
-  // === Botón "nuevo sentimiento" alineado a la derecha ===
-  const newCommentBtn = document.createElement("button");
-  newCommentBtn.type = "button";
-  newCommentBtn.className = "action-btn new-comment-btn";
-  newCommentBtn.title = "Nuevo sentimiento";
-  newCommentBtn.innerHTML = `
-    <span class="action-icon-circle">
-      <span class="icon-new-comment">⟳</span>
-    </span>
-  `;
-
-  newCommentBtn.addEventListener("click", () => {
-    showInputAndModel();
-  });
-
-  // Contenedor fila: iconos a la izquierda, "nuevo" a la derecha
+  // Contenedor fila: iconos a la izquierda (SOLO LIKES/DISLIKES ahora), nada a la derecha
   const actionsRow = document.createElement("div");
   actionsRow.className = "result-actions-row";
   actionsRow.appendChild(actionsDiv);
-  actionsRow.appendChild(newCommentBtn);
 
   responseWrapper.appendChild(resultDiv);
   responseWrapper.appendChild(actionsRow);
@@ -418,13 +370,14 @@ function analyze() {
         btnDislike.innerHTML = '<span class="action-icon-circle">👎</span>';
         btnDislike.onclick = () => fetch(`http://localhost:8000/api/sentiment/feedback/${id}?type=DISLIKE`, { method: "POST" }).then(() => alert("Gracias por el feedback"));
 
-        // Find specific container or append to result actions??
-        // Ideally we selected the actionsDiv reference from outer scope
-        const actionsRowVar = document.querySelector(".result-actions-row:last-child .result-actions");
         // This selector is risky. Better to use the 'actionsDiv' variable from closure since this is all inside one function 'analyze'.
         // 'actionsDiv' is available here!
         actionsDiv.appendChild(btnLike);
-        actionsDiv.appendChild(btnDislike);
+        actionsDiv.appendChild(btnDislike); // Restaurado "No me Gusta"
+
+        // Update Global Stats immediately AND History
+        fetchStats();
+        fetchHistory(0); // Restaurado Auditoria en tiempo real
       }
     })
     .catch((error) => {
@@ -709,38 +662,40 @@ async function fetchHistory(page = 0) {
     tableBody.innerHTML = "";
 
     entries.forEach(entry => {
-      const date = new Date(entry.fecha).toLocaleString();
+      try {
+        // Safe Date Parsing
+        let dateStr = "-";
+        try {
+          dateStr = new Date(entry.fecha).toLocaleString();
+        } catch (e) { dateStr = entry.fecha || "-"; }
 
-      // Determinar riesgo visual
-      const riesgoInfo = entry.riesgo ? `<span title="${entry.riesgo}" style="color: #ef4444;">⚠️</span>` : "";
+        // Safe Lowercase
+        const prevClass = (entry.prevision || "neutral").toLowerCase();
 
-      tableBody.innerHTML += `
-      <tr>
-        <td>${date}</td>
-        <td title="${entry.text}" style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-          ${entry.text.substring(0, 60)}...
-          <button class="action-btn copy-btn" data-text="${entry.text}" title="Copiar">⧉</button>
-        </td>
-        <td><span class="sentiment-badge ${entry.prevision.toLowerCase()}">${entry.prevision}</span></td>
-        <td>${entry.etiqueta || "-"}</td>
-        <td>${riesgoInfo}</td>
-        <td>${(entry.probabilidad * 100).toFixed(1)}%</td>
-        <td>
-          ${entry.feedback === 'LIKE' ? '👍' : ''}
-          ${entry.feedback === 'DISLIKE' ? '👎' : ''}
-        </td>
-      </tr>
-    `;
+        // Determinar riesgo visual
+        const riesgoInfo = entry.riesgo ? `<span title="${entry.riesgo}" style="color: #ef4444;">⚠️</span>` : "";
+
+        tableBody.innerHTML += `
+          <tr>
+            <td>${dateStr}</td>
+            <td title="${entry.text || ''}" style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              ${(entry.text || '').substring(0, 60)}...
+              <button class="action-btn copy-btn" data-text="${entry.text || ''}" title="Copiar">⧉</button>
+            </td>
+            <td><span class="sentiment-badge ${prevClass}">${entry.prevision || 'Neutro'}</span></td>
+            <td>${entry.etiqueta || "-"}</td>
+            <td>${riesgoInfo}</td>
+            <td>${entry.probabilidad ? (entry.probabilidad * 100).toFixed(1) : 0}%</td>
+          </tr>
+          `;
+      } catch (rowErr) {
+        console.error("Error rendering row:", rowErr, entry);
+      }
     });
 
-    // Update controllers
-    const pageInfo = document.getElementById("page-info");
-    const btnPrev = document.getElementById("btn-prev");
-    const btnNext = document.getElementById("btn-next");
-
-    if (pageInfo) pageInfo.textContent = `Página ${data.number + 1} de ${data.totalPages}`;
-    if (btnPrev) btnPrev.disabled = data.first;
-    if (btnNext) btnNext.disabled = data.last;
+    if (entries.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem;">No hay registros disponibles.</td></tr>`;
+    }
 
     // Bind copy buttons within table
     document.querySelectorAll(".copy-btn").forEach(b => {
@@ -751,10 +706,52 @@ async function fetchHistory(page = 0) {
       };
     });
 
+    // Update pagination info
+    const totalPages = data.totalPages || 1;
+    const pageInfo = document.getElementById("page-info");
+    if (pageInfo) pageInfo.textContent = `Página ${data.number + 1} de ${data.totalPages}`;
+
+    // Enable/Disable buttons
+    document.getElementById("btn-prev").disabled = data.first;
+    document.getElementById("btn-next").disabled = data.last;
+
   } catch (error) {
-    console.error("[Historial] Error:", error);
+    console.error("[Historial] Error fatal:", error);
+    document.getElementById("history-table-body").innerHTML = `<tr><td colspan="7" style="color:var(--danger); text-align:center;">Error cargando historial: ${error.message}</td></tr>`;
   }
 }
+
+/**
+ * Setup Reset DB Button Explicitly
+ */
+function setupResetButton() {
+  const btnReset = document.getElementById("btn-reset-db");
+  if (btnReset) {
+    // Remove old listeners to avoid duplicates (clone node trick usually works but we'll just add listener)
+    btnReset.replaceWith(btnReset.cloneNode(true));
+    const newBtn = document.getElementById("btn-reset-db");
+
+    newBtn.addEventListener("click", async () => {
+      if (!confirm("⚠️ ¿Estás seguro de BORRAR TODA la Base de Datos?\nEsta acción no se puede deshacer.")) return;
+
+      try {
+        const res = await fetch("http://localhost:8000/api/sentiment/reset", { method: "DELETE" });
+        if (res.ok) {
+          alert("Base de datos reiniciada exitosamente. 🗑️✨");
+          fetchStats();
+          fetchHistory(0);
+        } else {
+          alert("Error al reiniciar la base de datos.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error de conexión al intentar reiniciar.");
+      }
+    });
+    console.log("Reset Button Wired Up!");
+  }
+}
+
 
 // Setup Pagination Listeners
 function setupPaginationListeners() {
@@ -819,7 +816,8 @@ function setupBatchProcessing() {
       console.log(`[Batch] Delimiter: '${separator}', Target Column Index: ${colIndex} (${header[colIndex]})`);
 
       btn.disabled = true;
-      btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Procesando...`;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> CSV`; // Icon only
+      btn.title = "Procesando...";
 
       // Redirigir al dashboard para ver el progreso real
       const dashLink = document.querySelector('a[data-target="dashboard"]');
@@ -859,9 +857,9 @@ function setupBatchProcessing() {
 
             // Visual feedback every 1 row for "speed" feel in demo
             if (processed % 1 === 0) {
-              btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> (${processed})...`;
-              // Updating stats every row might be too heavy, maybe every 3
-              if (processed % 3 === 0) fetchStats();
+              btn.innerHTML = `< i class="fas fa-spinner fa-spin" ></i > CSV(${processed})`; // Show count inside button
+              // Update stats immediately on EVERY row to show "movement"
+              await fetchStats();
             }
           } catch (err) {
             console.error("Error en batch row:", err);
@@ -870,7 +868,8 @@ function setupBatchProcessing() {
       }
 
       btn.disabled = false;
-      btn.innerHTML = `<i class="fas fa-file-csv"></i> Procesar Lote CSV`;
+      btn.innerHTML = `< i class="fas fa-file-csv" ></i > CSV`; // Revert to folder icon
+      btn.title = "Cargar CSV";
       alert(`Se procesaron ${processed} reseñas exitosamente.`);
       fetchStats();
       input.value = "";
@@ -955,6 +954,28 @@ document.addEventListener("DOMContentLoaded", () => {
   setupVoiceInput();
   setupPaginationListeners();
   setupPaginationListeners();
+
+  // Setup Reset DB (Restaurado)
+  const btnReset = document.getElementById("btn-reset-db");
+  if (btnReset) {
+    btnReset.addEventListener("click", async () => {
+      if (!confirm("⚠️ ¿Estás seguro de BORRAR TODA la Base de Datos?\nEsta acción no se puede deshacer.")) return;
+
+      try {
+        const res = await fetch("http://localhost:8000/api/sentiment/reset", { method: "DELETE" });
+        if (res.ok) {
+          alert("Base de datos reiniciada exitosamente. 🗑️✨");
+          fetchStats();
+          fetchHistory(0);
+        } else {
+          alert("Error al reiniciar la base de datos.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error de conexión al intentar reiniciar.");
+      }
+    });
+  }
 
   // Limpieza por si hubiera algún input secundario viejo
   const legacySecondary = document.querySelector(

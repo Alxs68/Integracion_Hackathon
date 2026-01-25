@@ -1,36 +1,34 @@
-# 🚀 Guía de Lanzamiento - Sistema Híbrido G68
+# 👥 Equipo G68 - Asignación de Responsabilidades y Créditos
 
-Este proyecto utiliza **Java 21 (LTS)** y **Python 3.10+**. Para que el sistema funcione correctamente en sus equipos tras bajar la rama, sigan estos pasos:
+Este documento garantiza la **trazabilidad** del trabajo realizado por cada miembro del equipo, asegurando que los créditos sean otorgados correctamente según las áreas de impacto.
 
-## 1. Requisitos Previos
-*   **JDK 21:** Es obligatorio (Recomendado: Microsoft OpenJDK 21).
-*   **Python:** Con el entorno virtual activado y dependencias instaladas.
+## 📊 Ciencia de Datos (DS)
+Responsables de la lógica analítica, modelos y métricas.
 
-## 2. Configuración de Java (Terminal PowerShell)
-Si el comando `.\mvnw` arroja un error de versión o de `JAVA_HOME`, ejecuten este bloque antes de lanzar (ajusten la ruta si es necesario):
+*   **Diego**:
+    *   **API**: Integración y endpoints del servicio de Python.
+    *   **Pruebas**: Testing de integración y endpoints.
+*   **Alexis**:
+    *   **Motor**: Estructura central del procesamiento (`motor_hibrido.py`).
+    *   **Lógica**: Algoritmos de decisión y reglas semánticas.
+    *   **Modelos**: Entrenamiento y selección de modelos predictivos.
+*   **Fernando**:
+    *   **QA (Calidad)**: Validación de resultados y métricas (KPIs).
+    *   **Documentación**: Elaboración de manuales y reportes técnicos.
 
-```powershell
-$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-21.0.5.11-hotspot"
-$env:Path = "$env:JAVA_HOME\bin;" + $env:Path
-```
+## ☕ Backend & Persistencia
+*   **Lorena**:
+    *   **Persistencia**: Arquitectura de Base de Datos y Dependencias.
+    *   **Integración**: Conexión entre servicios y base de datos.
+*   **Edwing Herrera**:
+    *   **Infraestructura BE**: Configuración de Docker, scripts de despliegue (`stop_all.bat`) y entorno de ejecución.
 
-## 3. Comandos de Ejecución
-Sigan este orden en terminales separadas:
-
-### A. Servicio ML (Python)
-```powershell
-python ml-python/src/app/main.py
-```
-
-### B. Backend API (Java 21)
-```powershell
-cd backend-java/api
-.\mvnw spring-boot:run
-```
-
-## 4. Visualización
-Accedan a la interfaz avanzada en:
-👉 [http://localhost:8000/index.html](http://localhost:8000/index.html)
+## 🎨 Frontend & Experiencia de Usuario
+*   **Florentino**:
+    *   Diseño de Arquitectura Frontend.
+    *   Interfaz de Usuario (UI) y flujos de interacción.
+*   **G68 Supreme (Agente)**:
+    *   Implementación de Dashboard y Gráficos (Donut/KPIs).
 
 ---
-*G68 - Calidad y Sentimiento en Tiempo Real* 🚀
+> **Nota de Trazabilidad**: Las mejoras "Supreme" (KPIs, Docker, UI Avanzada) se han construido sobre los cimientos sólidos establecidos por Florentino y Lorena, manteniendo su autoría en los módulos base.

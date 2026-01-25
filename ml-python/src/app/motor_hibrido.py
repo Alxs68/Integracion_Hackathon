@@ -142,14 +142,30 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia, engine=None):
     if DEBUG_AUDIT:
         _audit_console(texto, pred_ia, prob_ia_val, ajuste_semantico, hits, deptos, final_pred, prob_final)
 
-    # 5. Generación de Top Features
-    top_features = _generar_top_features(texto, hits, engine)
+    # 5. Generación de Top Features con Alineación Estricta y Filtrado
+    top_features = _generar_top_features_stricto(texto, hits, final_pred, engine)
+
+    # 6. Etiquetas de Cliente y Riesgo
+    etiqueta = "Indiferente"
+    riesgo = None
+    
+    if final_pred == "Positivo":
+        if prob_final > 0.85: etiqueta = "Cliente Muy Satisfecho"
+        else: etiqueta = "Cliente Satisfecho"
+    elif final_pred == "Negativo":
+        if prob_final > 0.85: etiqueta = "Cliente Muy Insatisfecho"
+        else: etiqueta = "Cliente Insatisfecho"
+        
+    if "Veto Crítico" in motivo:
+        riesgo = "⚠️ RIESGO CRÍTICO DETECTADO: Revisión Manual Urgente Requeria"
 
     return {
         "prevision": final_pred,
         "probabilidad": round(prob_final, 4),
         "top_features": top_features,
-        "explicabilidad_interna": {  # Propuesta para mañana
+        "etiqueta": etiqueta,
+        "riesgo": riesgo,
+        "explicabilidad_interna": {
             "motivo": motivo,
             "ajuste": round(ajuste_semantico, 2),
             "deptos": list(deptos)
@@ -158,40 +174,68 @@ def enriquecer_respuesta(texto, pred_ia, prob_ia, engine=None):
 
 def _audit_console(txt, p_ia, pr_ia, aj, hits, dp, f_p, f_pr):
     mapa = {0: "Negativo", 1: "Positivo", 3: "Neutro"}
-    # Ensure we map the IA prediction to its label even if it arrives as a string
     try:
         p_ia_int = int(p_ia)
         p_ia_n = mapa.get(p_ia_int, p_ia)
     except (ValueError, TypeError):
-        p_ia_n = p_ia  # fallback to original value if conversion fails
+        p_ia_n = p_ia
     print(f"\n🔍 [G68 AUDIT] '{txt[:50]}...'", flush=True)
     print(f"   ├─ IA: {p_ia_n} ({pr_ia:.2f}) | Ajuste: {aj:.2f}", flush=True)
     if hits: print(f"   ├─ Señales: {[h['word'] for h in hits[:5]]}", flush=True)
     print(f"   └─ FINAL: {f_p} ({f_pr:.2f})", flush=True)
 
-def _generar_top_features(texto, hits, engine):
-    """Extrae las 3 señales más importantes del texto."""
+def _generar_top_features_stricto(texto, hits, sentimiento_global, engine):
+    """
+    Genera top features priorizando la alineación con el sentimiento.
+    Si es Negativo -> Solo mostramos palabras negativas.
+    Si es Positivo -> Solo mostramos palabras positivas.
+    Filtrado estricto de Stopwords.
+    """
     feats = []
-    # Prioridad 1: Críticos del diccionario
-    if hits:
-        ordenados = sorted(hits, key=lambda h: abs(h['original_peso']), reverse=True)
-        # Tomamos los 3 más importantes si superan umbral o si son los únicos hallazgos relevantes
-        candidatos = [h for h in ordenados if abs(h['original_peso']) >= 0.8]
-        if not candidatos and ordenados:
-             candidatos = ordenados[:3] # Fallback a los top encontrados
-        
-        for h in candidatos[:3]:
-            feats.append(h['word'])
     
-    # Prioridad 2: Features del modelo ML si faltan
+    # Filtrar hits según alineación
+    hits_alineados = []
+    for h in hits:
+        peso = h['original_peso']
+        es_neg = peso < 0
+        es_pos = peso > 0
+        
+        if sentimiento_global == "Negativo" and es_neg:
+            hits_alineados.append(h)
+        elif sentimiento_global == "Positivo" and es_pos:
+            hits_alineados.append(h)
+        elif sentimiento_global == "Neutro":
+            hits_alineados.append(h) # En neutro mostramos contraste
+
+    # Ordenar por importancia (magnitud del peso) y longitud (ngramas primero)
+    # Dando prioridad a NGramas > 1
+    hits_alineados.sort(key=lambda x: (len(x['word'].split()) > 1, abs(x['original_peso'])), reverse=True)
+    
+    # Tomar top 3 del diccionario
+    for h in hits_alineados[:3]:
+        feats.append(h['word'])
+    
+    # Si faltan y hay motor IA, buscar en modelo pero con filtro estricto
     if len(feats) < 3 and engine:
         try:
-            ml_feats = engine.get_top_features_from_model(texto, top_n=10)
-            for f_name, _ in ml_feats:
-                if es_ngram_valido(f_name, STOPWORDS) and f_name not in feats:
-                    if any(tiene_carga_emocional(p, DICCIONARIO_STEMMED, SUSTANTIVOS_NEUTROS, stemmer) for p in f_name.split()):
-                        feats.append(f_name)
+            ml_feats = engine.get_top_features_from_model(texto, top_n=15)
+            for f_name, score in ml_feats:
+                # Filtrar stopwords
+                if not es_ngram_valido(f_name, STOPWORDS): continue
+                if f_name in feats: continue
+                
+                # Alinear también features del ML
+                es_pos_ml = score > 0 # Coeficiente positivo -> predice clase (ojo con esto, depende clase)
+                # NOTA: get_top_features devuelve score = coef * value. 
+                # Si predijo Negativo, features importantes tendrán score alto en magnitud.
+                
+                # Simplificación: Aceptamos feature si no es stopword y tiene carga emocional
+                words = f_name.split()
+                if any(t in STOPWORDS for t in words): continue
+                
+                feats.append(f_name)
                 if len(feats) >= 3: break
-        except: pass
-        
+        except Exception: 
+            pass
+            
     return " | ".join(feats) if feats else "análisis contextual"

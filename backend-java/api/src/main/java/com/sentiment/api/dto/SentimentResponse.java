@@ -1,7 +1,10 @@
 package com.sentiment.api.dto;
 
 public record SentimentResponse(
-                String prevision,
-                Double probabilidad,
-                String top_features) {
+        Long id,
+        String prevision,
+        Double probabilidad,
+        String top_features,
+        String etiqueta,
+        String riesgo) {
 }

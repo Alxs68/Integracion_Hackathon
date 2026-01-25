@@ -1,6 +1,8 @@
 package com.sentiment.api.repository;
 
 import com.sentiment.api.entity.SentimentAnalysis;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +13,7 @@ public interface SentimentAnalysisRepository extends JpaRepository<SentimentAnal
 
     List<SentimentAnalysis> findByPrevision(String prevision);
 
-    List<SentimentAnalysis> findTop5ByOrderByFechaDesc();
+    List<SentimentAnalysis> findTop50ByOrderByFechaDesc();
+
+    Page<SentimentAnalysis> findAllByOrderByFechaDesc(Pageable pageable);
 }

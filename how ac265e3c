@@ -1,0 +1,57 @@
+[33mdb458d39[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestoration/final-advanced[m[33m)[m HEAD@{2026-01-24 09:00}: reset: moving to db458d39
+[33m94d91421[m HEAD@{2026-01-24 08:32}: reset: moving to HEAD
+[33m94d91421[m HEAD@{2026-01-24 08:32}: checkout: moving from dev to restoration/final-advanced
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-24 07:55}: checkout: moving from review/origin-feature to dev
+[33m68f4a057[m[33m ([m[1;32mreview/origin-feature[m[33m, [m[1;32mfeature/entrega-modelo-integral[m[33m)[m HEAD@{2026-01-24 07:44}: checkout: moving from integration/diego-base to review/origin-feature
+[33mc7b3bb59[m[33m ([m[1;32mintegration/diego-base[m[33m)[m HEAD@{2026-01-24 07:24}: checkout: moving from ac265e3cf76034cb4ef6de88905a399c47f6490c to integration/diego-base
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-24 04:12}: checkout: moving from integration/diego-base to ac265e3c
+[33mc7b3bb59[m[33m ([m[1;32mintegration/diego-base[m[33m)[m HEAD@{2026-01-24 03:37}: checkout: moving from final-integration to integration/diego-base
+[33m137c6c73[m[33m ([m[1;32mfinal-integration[m[33m)[m HEAD@{2026-01-24 03:16}: commit: Sincronización final: Recuperación de lógica y archivos de ejecución 15:45
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-24 03:09}: checkout: moving from rescate-supreme to final-integration
+[33me9cc2366[m[33m ([m[1;32mrescate-supreme[m[33m)[m HEAD@{2026-01-24 03:01}: checkout: moving from rescate-final to rescate-supreme
+[33me4f9839e[m[33m ([m[1;32mrescate-final[m[33m)[m HEAD@{2026-01-24 02:53}: checkout: moving from rama-estabilizada-hackathon to rescate-final
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 02:39}: checkout: moving from 625c74f7b25dfd4263a4d25bc83638a2631a6fc9 to rama-estabilizada-hackathon
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 02:38}: checkout: moving from restoration/final-advanced to 625c74f7
+[33m94d91421[m HEAD@{2026-01-24 02:37}: reset: moving to HEAD
+[33m94d91421[m HEAD@{2026-01-24 02:09}: reset: moving to HEAD
+[33m94d91421[m HEAD@{2026-01-24 02:09}: checkout: moving from restoration/advanced-found to restoration/final-advanced
+[33mfbd59628[m[33m ([m[1;32mrestoration/advanced-found[m[33m)[m HEAD@{2026-01-24 01:20}: reset: moving to HEAD
+[33mfbd59628[m[33m ([m[1;32mrestoration/advanced-found[m[33m)[m HEAD@{2026-01-24 01:20}: checkout: moving from restoration/advanced-found to restoration/advanced-found
+[33mfbd59628[m[33m ([m[1;32mrestoration/advanced-found[m[33m)[m HEAD@{2026-01-24 01:16}: checkout: moving from fbd59628c9ffe34265377a9f9a55198a6582a425 to restoration/advanced-found
+[33mfbd59628[m[33m ([m[1;32mrestoration/advanced-found[m[33m)[m HEAD@{2026-01-24 01:16}: checkout: moving from reconstruction/tracing-v2 to fbd59628
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 00:29}: reset: moving to HEAD
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 00:29}: checkout: moving from reconstruction/tracing-v2 to reconstruction/tracing-v2
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 00:23}: checkout: moving from reconstruction/tracing-v2 to reconstruction/tracing-v2
+[33m625c74f7[m[33m ([m[1;32mreconstruction/tracing-v2[m[33m, [m[1;32mrama-estabilizada-hackathon[m[33m)[m HEAD@{2026-01-24 00:16}: commit (amend): feat: complete Phase 2 improvements (MultiDomain, Security, Audio v2)
+[33m969d28c3[m HEAD@{2026-01-24 00:16}: commit: feat: complete Phase 2 improvements (MultiDomain, Security, Audio v2)
+[33m3bc2a54e[m[33m ([m[1;31mclean-repo/traceability-final[m[33m)[m HEAD@{2026-01-23 23:03}: commit: style(ui): Advanced animations v2
+[33m9f5bf1e2[m HEAD@{2026-01-23 23:03}: commit: style(ui): Polished visual assets
+[33m0627145f[m HEAD@{2026-01-23 23:03}: commit: perf(backend): Tuning for high throughput
+[33m9464e90a[m HEAD@{2026-01-23 23:03}: commit: chore(backend): Security configurations
+[33m2dead93f[m HEAD@{2026-01-23 23:03}: commit: docs: Research notebooks and project traceability
+[33mc9e47cb4[m HEAD@{2026-01-23 23:03}: commit: feat(tools): Universal CSV Batch Processor
+[33m3e7599f6[m HEAD@{2026-01-23 23:03}: commit: feat(ml): Multi-domain logic expansion
+[33m0ca8314c[m HEAD@{2026-01-23 23:03}: commit: feat(js): Dashboard logic and interactions
+[33m3502d035[m HEAD@{2026-01-23 23:02}: commit: config(infra): API connectivity and port setup for MVP
+[33m2179b6e6[m HEAD@{2026-01-23 23:02}: commit: docs(backend): Humanized comments in Spanish
+[33m9a477fb1[m HEAD@{2026-01-23 23:01}: commit: feat(backend): Java controller logic
+[33m6a208710[m HEAD@{2026-01-23 23:01}: commit: feat(api): FastAPI server exposure
+[33m5f5fafcc[m HEAD@{2026-01-23 22:59}: commit: feat(ml): Unified Sentiment Engine (Supreme Integral)
+[33m50d85e3c[m[33m ([m[1;32mlab/local-restoration[m[33m)[m HEAD@{2026-01-23 22:59}: reset: moving to upstream/dev
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-23 21:57}: reset: moving to origin/lab/local-restoration
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-23 21:57}: checkout: moving from reconstruction/mvp to final-integration
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-23 21:36}: checkout: moving from feat/ds-diego to final-integration
+[33mc416cd82[m[33m ([m[1;31mclean-repo/feat/ds-diego[m[33m, [m[1;32mfeat/ds-diego[m[33m)[m HEAD@{2026-01-23 20:44}: checkout: moving from lab/local-restoration to feat/ds-diego
+[33m50d85e3c[m[33m ([m[1;32mlab/local-restoration[m[33m)[m HEAD@{2026-01-23 20:37}: reset: moving to upstream/dev
+[33mac265e3c[m[33m ([m[1;31mclean-repo/dev[m[33m)[m HEAD@{2026-01-23 15:34}: commit: Release: G68 Migration Deliverables (Strategy + Patches + Final ZIP)
+[33m79cbcc28[m HEAD@{2026-01-21 18:10}: commit: Restore Lab G68 Supreme persistence logic (H2 File + Stats) and clean conflicts
+[33m79fe2306[m HEAD@{2026-01-21 18:07}: checkout: moving from 79fe2306d1453412f18a3e72c76ef710d503f51b to lab/local-restoration
+[33m79fe2306[m HEAD@{2026-01-21 17:40}: checkout: moving from sim-ds-combined to upstream/feature/backend-lorena
+[33mf6bff315[m[33m ([m[1;32msim-ds-combined[m[33m)[m HEAD@{2026-01-21 17:22}: commit: Cleanup: Remove personal folder
+[33m7e3776fc[m HEAD@{2026-01-21 17:19}: commit: Final: Deploy Checklist and Fixes
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 15:01}: checkout: moving from dev to sim-ds-combined
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 15:01}: checkout: moving from sim-ds-combined to dev
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 15:00}: checkout: moving from dev to sim-ds-combined
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 15:00}: checkout: moving from sim-diego to dev
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 14:59}: checkout: moving from dev to sim-diego
+[33m5a29d6a4[m[33m ([m[1;32msim-fernando[m[33m, [m[1;32msim-diego[m[33m, [m[1;32msim-alexis[m[33m, [m[1;32mdev[m[33m)[m HEAD@{2026-01-21 14:59}: checkout: 
